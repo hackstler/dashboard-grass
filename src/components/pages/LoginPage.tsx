@@ -134,15 +134,23 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           </CardContent>
         </Card>
 
-        <div className="flex justify-center mt-6">
-          <select
-            value={i18n.language.startsWith('es') ? 'es' : 'en'}
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
-            className="bg-surface/50 border border-border/50 text-text-muted text-xs px-3 py-1.5 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer backdrop-blur-sm"
-          >
-            <option value="en">English</option>
-            <option value="es">Español</option>
-          </select>
+        <div className="flex justify-center mt-6 gap-1.5">
+          {([["en", "EN"], ["es", "ES"]] as const).map(([code, label]) => {
+            const active = i18n.language.startsWith(code);
+            return (
+              <button
+                key={code}
+                onClick={() => i18n.changeLanguage(code)}
+                className={`btn-press px-5 py-1.5 font-mono text-[11px] font-semibold tracking-wider rounded-[var(--radius-sm)] transition-all duration-300 cursor-pointer backdrop-blur-sm ${
+                  active
+                    ? "bg-accent-dim text-accent shadow-[0_0_16px_rgba(59,130,246,0.15)] border border-accent/20"
+                    : "text-text-dim hover:text-text-muted hover:bg-glass-subtle border border-transparent"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

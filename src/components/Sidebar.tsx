@@ -133,15 +133,23 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
           )}
         </nav>
 
-        <div className="border-t border-border px-3 py-2">
-          <select
-            value={i18n.language.startsWith('es') ? 'es' : 'en'}
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
-            className="w-full bg-surface border border-border text-text-muted text-xs px-2 py-1.5 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer"
-          >
-            <option value="en">English</option>
-            <option value="es">Español</option>
-          </select>
+        <div className="border-t border-border px-3 py-2.5 flex gap-1.5">
+          {([["en", "EN"], ["es", "ES"]] as const).map(([code, label]) => {
+            const active = i18n.language.startsWith(code);
+            return (
+              <button
+                key={code}
+                onClick={() => i18n.changeLanguage(code)}
+                className={`btn-press flex-1 font-mono text-[11px] font-semibold tracking-wider py-1.5 rounded-[var(--radius-sm)] transition-all duration-300 cursor-pointer ${
+                  active
+                    ? "bg-accent-dim text-accent shadow-[var(--shadow-nav-active)] border border-accent/20"
+                    : "text-text-dim hover:text-text-muted hover:bg-surface-hover border border-transparent"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
         <div className="border-t border-border px-4 py-3 flex items-center gap-3">
           <button

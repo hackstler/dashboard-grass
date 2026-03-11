@@ -151,14 +151,24 @@ export function SettingsPage() {
           <CardDescription>{t('settings.languageDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <select
-            value={i18n.language.startsWith('es') ? 'es' : 'en'}
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
-            className="w-full sm:w-48 bg-surface border border-border text-text text-sm px-3 py-2 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer"
-          >
-            <option value="en">English</option>
-            <option value="es">Español</option>
-          </select>
+          <div className="flex gap-2">
+            {([["en", "English"], ["es", "Español"]] as const).map(([code, label]) => {
+              const active = i18n.language.startsWith(code);
+              return (
+                <button
+                  key={code}
+                  onClick={() => i18n.changeLanguage(code)}
+                  className={`btn-press px-5 py-2 font-mono text-xs font-semibold tracking-wide rounded-[var(--radius-md)] transition-all duration-300 cursor-pointer ${
+                    active
+                      ? "bg-accent-dim text-accent shadow-[var(--shadow-nav-active)] border border-accent/20"
+                      : "text-text-muted hover:text-text hover:bg-surface-hover border border-border"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
         </CardContent>
       </Card>
     </div>
