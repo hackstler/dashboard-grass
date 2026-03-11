@@ -242,7 +242,6 @@ export function KnowledgeListPage() {
               __html: t('knowledge.deleteDocumentConfirm', { title: deleteTarget?.title ?? '' }),
             }}
           />
-          </p>
           <div className="flex justify-end gap-3">
             <Button
               variant="secondary"
