@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../context/AppContext";
 import { useDocuments } from "../../hooks/useDocuments";
 import type { DocumentSource, DocumentContentType } from "../../types";
@@ -48,6 +49,7 @@ const statusVariant = {
 };
 
 export function KnowledgeListPage() {
+  const { t } = useTranslation();
   const { user, addToast, setActiveView } = useApp();
   const [filterType, setFilterType] = useState<string>("all");
   const [search, setSearch] = useState("");
@@ -69,10 +71,10 @@ export function KnowledgeListPage() {
     setDeleting(true);
     try {
       await deleteDocument(deleteTarget.id);
-      addToast("Document deleted", "success");
+      addToast(t('knowledge.documentDeleted'), "success");
       setDeleteTarget(null);
     } catch {
-      addToast("Failed to delete document", "error");
+      addToast(t('knowledge.deleteFailed'), "error");
     } finally {
       setDeleting(false);
     }
@@ -83,10 +85,10 @@ export function KnowledgeListPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 animate-fade-in-up">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-            Knowledge Base
+            {t('knowledge.title')}
           </h1>
           <p className="text-sm text-text-muted mt-2">
-            Manage your indexed documents.
+            {t('knowledge.subtitle')}
           </p>
         </div>
         <Button
@@ -95,13 +97,13 @@ export function KnowledgeListPage() {
           icon={<UploadIcon size={16} />}
           onClick={() => setActiveView("knowledge-upload")}
         >
-          Upload
+          {t('common.upload')}
         </Button>
       </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-6 animate-fade-in-up stagger-1">
         <Input
-          placeholder="Search by title..."
+          placeholder={t('knowledge.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           icon={<SearchIcon size={16} />}
@@ -112,7 +114,7 @@ export function KnowledgeListPage() {
           onChange={(e) => setFilterType(e.target.value)}
           className="w-full sm:w-auto bg-surface border border-border text-text text-sm px-3 py-2 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer"
         >
-          <option value="all">All types</option>
+          <option value="all">{t('knowledge.allTypes')}</option>
           <option value="pdf">PDF</option>
           <option value="markdown">Markdown</option>
           <option value="html">HTML</option>
@@ -149,11 +151,11 @@ export function KnowledgeListPage() {
         <Card>
           <EmptyState
             icon={<DatabaseIcon size={40} />}
-            title="No documents found"
+            title={t('knowledge.noDocuments')}
             description={
               search || filterType !== "all"
-                ? "Try adjusting your filters."
-                : "Upload files, URLs, or text to get started."
+                ? t('knowledge.adjustFilters')
+                : t('knowledge.uploadToStart')
             }
             action={
               !search && filterType === "all" ? (
@@ -163,7 +165,7 @@ export function KnowledgeListPage() {
                   icon={<UploadIcon size={16} />}
                   onClick={() => setActiveView("knowledge-upload")}
                 >
-                  Upload content
+                  {t('knowledge.uploadContent')}
                 </Button>
               ) : undefined
             }
@@ -198,7 +200,7 @@ export function KnowledgeListPage() {
                       <>
                         <span className="text-text-dim">&middot;</span>
                         <span className="text-xs text-text-dim">
-                          {doc.chunkCount} chunks
+                          {t('knowledge.chunks', { count: doc.chunkCount })}
                         </span>
                       </>
                     )}
@@ -231,15 +233,15 @@ export function KnowledgeListPage() {
       <Modal
         open={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
-        title="Delete Document"
+        title={t('knowledge.deleteDocument')}
       >
         <div className="space-y-4">
-          <p className="text-sm text-text-muted">
-            Are you sure you want to delete{" "}
-            <span className="text-text-bright font-medium">
-              {deleteTarget?.title}
-            </span>
-            ? This will remove the document and all its indexed chunks.
+          <p
+            className="text-sm text-text-muted"
+            dangerouslySetInnerHTML={{
+              __html: t('knowledge.deleteDocumentConfirm', { title: deleteTarget?.title ?? '' }),
+            }}
+          />
           </p>
           <div className="flex justify-end gap-3">
             <Button
@@ -247,7 +249,7 @@ export function KnowledgeListPage() {
               size="sm"
               onClick={() => setDeleteTarget(null)}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               variant="danger"
@@ -255,7 +257,7 @@ export function KnowledgeListPage() {
               onClick={handleDelete}
               loading={deleting}
             >
-              Delete
+              {t('common.delete')}
             </Button>
           </div>
         </div>

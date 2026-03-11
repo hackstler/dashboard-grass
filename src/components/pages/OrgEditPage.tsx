@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../context/AppContext";
 import type { OrganizationDetail } from "../../types";
 import { Button } from "../ui/Button";
@@ -25,6 +26,7 @@ export function OrgEditPage({
   getOrganization,
   updateOrganization,
 }: OrgEditPageProps) {
+  const { t } = useTranslation();
   const { addToast } = useApp();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -59,7 +61,7 @@ export function OrgEditPage({
       setLogo(org.logo);
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to load organization",
+        err instanceof Error ? err.message : t('myOrg.loadFailed'),
         "error"
       );
       onBackRef.current();
@@ -87,10 +89,10 @@ export function OrgEditPage({
         currency: currency || "\u20ac",
         logo,
       });
-      addToast("Organization updated", "success");
+      addToast(t('orgEdit.orgUpdated'), "success");
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to update",
+        err instanceof Error ? err.message : t('orgEdit.updateFailed'),
         "error"
       );
     } finally {
@@ -102,7 +104,7 @@ export function OrgEditPage({
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 1.5 * 1024 * 1024) {
-      addToast("Logo must be under 1.5 MB", "error");
+      addToast(t('orgEdit.logoTooLarge'), "error");
       return;
     }
     const reader = new FileReader();
@@ -155,21 +157,21 @@ export function OrgEditPage({
             onClick={handleSave}
             loading={saving}
           >
-            Save Changes
+            {t('common.saveChanges')}
           </Button>
         )}
       </div>
 
       {!isOwnOrg && (
         <div className="mb-6 px-4 py-3 bg-yellow/10 border border-yellow/20 rounded-[var(--radius-md)] text-sm text-yellow">
-          You can only edit your own organization.
+          {t('orgEdit.onlyEditOwn')}
         </div>
       )}
 
       <div className="space-y-6">
         {/* Logo Section */}
         <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up">
-          <h2 className="text-sm font-semibold text-text-bright mb-4">Logo</h2>
+          <h2 className="text-sm font-semibold text-text-bright mb-4">{t('orgEdit.logo')}</h2>
           <div className="flex items-center gap-5">
             <div className="w-20 h-20 rounded-[var(--radius-lg)] bg-surface-hi border border-border flex items-center justify-center overflow-hidden shrink-0">
               {logo ? (
@@ -191,7 +193,7 @@ export function OrgEditPage({
                 }`}
               >
                 <ImageIcon size={14} />
-                Upload Logo
+                {t('orgEdit.uploadLogo')}
                 <input
                   type="file"
                   accept="image/*"
@@ -205,10 +207,10 @@ export function OrgEditPage({
                   onClick={() => setLogo(null)}
                   className="block text-xs text-text-dim hover:text-red transition-colors cursor-pointer"
                 >
-                  Remove logo
+                  {t('orgEdit.removeLogo')}
                 </button>
               )}
-              <p className="text-xs text-text-dim">PNG, JPG up to 1.5 MB</p>
+              <p className="text-xs text-text-dim">{t('orgEdit.logoSizeLimit')}</p>
             </div>
           </div>
         </div>
@@ -216,19 +218,19 @@ export function OrgEditPage({
         {/* Company Details */}
         <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up stagger-1">
           <h2 className="text-sm font-semibold text-text-bright mb-4">
-            Company Details
+            {t('orgEdit.companyDetails')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
-              label="Company Name"
-              placeholder="Acme Corp"
+              label={t('organizations.companyName')}
+              placeholder={t('organizations.companyNamePlaceholder')}
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={!isOwnOrg}
             />
             <Input
-              label="Slug"
-              placeholder="acme-corp"
+              label={t('organizations.slug')}
+              placeholder={t('organizations.slugPlaceholder')}
               value={slug}
               onChange={(e) =>
                 setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
@@ -236,32 +238,32 @@ export function OrgEditPage({
               disabled={!isOwnOrg}
             />
             <Input
-              label="NIF / Tax ID"
-              placeholder="B12345678"
+              label={t('organizations.nif')}
+              placeholder={t('organizations.nifPlaceholder')}
               value={nif}
               onChange={(e) => setNif(e.target.value)}
               disabled={!isOwnOrg}
             />
             <Input
-              label="Email"
+              label={t('common.email')}
               type="email"
-              placeholder="info@acme.com"
+              placeholder={t('organizations.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={!isOwnOrg}
             />
             <Input
-              label="Phone"
+              label={t('organizations.phone')}
               type="tel"
-              placeholder="+34 600 000 000"
+              placeholder={t('organizations.phonePlaceholder')}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               disabled={!isOwnOrg}
             />
             <div className="sm:col-span-2">
               <Textarea
-                label="Address"
-                placeholder="123 Main St, City, Country"
+                label={t('organizations.address')}
+                placeholder={t('organizations.addressPlaceholder')}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 disabled={!isOwnOrg}
@@ -274,20 +276,20 @@ export function OrgEditPage({
         {/* Billing */}
         <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up stagger-2">
           <h2 className="text-sm font-semibold text-text-bright mb-4">
-            Billing
+            {t('orgEdit.billing')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
-              label="VAT Rate (%)"
+              label={t('organizations.vatRate')}
               type="number"
-              placeholder="21"
+              placeholder={t('organizations.vatRatePlaceholder')}
               value={vatRate}
               onChange={(e) => setVatRate(e.target.value)}
               disabled={!isOwnOrg}
             />
             <Input
-              label="Currency"
-              placeholder="\u20ac"
+              label={t('organizations.currency')}
+              placeholder={t('organizations.currencyPlaceholder')}
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
               disabled={!isOwnOrg}

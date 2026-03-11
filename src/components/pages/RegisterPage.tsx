@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearch, useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { useAuthAdapter } from "../../hooks/useAuthAdapter";
 import { isLoggedIn, validateInviteToken } from "../../api/auth";
 import { Card, CardContent } from "../ui/Card";
@@ -9,6 +10,7 @@ import { Skeleton } from "../ui/Skeleton";
 import type { InviteValidation } from "../../types";
 
 export function RegisterPage() {
+  const { t } = useTranslation();
   const search = useSearch();
   const [, navigate] = useLocation();
   const params = new URLSearchParams(search);
@@ -48,14 +50,14 @@ export function RegisterPage() {
       }
     }).catch((err) => {
       console.error("[RegisterPage] Redirect result failed:", err);
-      if (!cancelled) setFormError(err instanceof Error ? err.message : "Error al registrar");
+      if (!cancelled) setFormError(err instanceof Error ? err.message : t('register.registerError'));
     });
     return () => { cancelled = true; };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!token) {
-      setErrorMessage("Link invalido. No se encontro token de invitacion.");
+      setErrorMessage(t('register.invalidLink'));
       setState("invalid");
       return;
     }
@@ -68,17 +70,17 @@ export function RegisterPage() {
           setState("form");
         } else {
           if (result.reason === "expired") {
-            setErrorMessage("Esta invitacion ha expirado. Contacta a tu administrador.");
+            setErrorMessage(t('register.expiredInvitation'));
           } else if (result.reason === "used") {
-            setErrorMessage("Esta invitacion ya fue utilizada.");
+            setErrorMessage(t('register.usedInvitation'));
           } else {
-            setErrorMessage("Invitacion invalida.");
+            setErrorMessage(t('register.invalidInvitation'));
           }
           setState("invalid");
         }
       })
       .catch(() => {
-        setErrorMessage("Invitacion invalida o expirada.");
+        setErrorMessage(t('register.invalidOrExpired'));
         setState("invalid");
       });
   }, [token]);
@@ -91,11 +93,11 @@ export function RegisterPage() {
   const handleCredentialRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setFormError("Las contrasenas no coinciden");
+      setFormError(t('register.passwordsDontMatch'));
       return;
     }
     if (password.length < 8) {
-      setFormError("La contrasena debe tener al menos 8 caracteres");
+      setFormError(t('register.passwordMinLength'));
       return;
     }
 
@@ -112,7 +114,7 @@ export function RegisterPage() {
       goToDashboard();
     } catch (err) {
       console.error("[RegisterPage] Credential registration failed:", err);
-      setFormError(err instanceof Error ? err.message : "Error al registrar");
+      setFormError(err instanceof Error ? err.message : t('register.registerError'));
     } finally {
       setSubmitting(false);
     }
@@ -120,7 +122,7 @@ export function RegisterPage() {
 
   const handleGoogleRegister = async () => {
     if (!firstName.trim() || !lastName.trim()) {
-      setFormError("Debes rellenar tu nombre y apellido antes de continuar");
+      setFormError(t('register.nameRequired'));
       return;
     }
 
@@ -135,7 +137,7 @@ export function RegisterPage() {
       goToDashboard();
     } catch (err) {
       console.error("[RegisterPage] Google registration failed:", err);
-      setFormError(err instanceof Error ? err.message : "Error al registrar con Google");
+      setFormError(err instanceof Error ? err.message : t('register.registerGoogleError'));
     } finally {
       setSubmitting(false);
     }
@@ -164,7 +166,7 @@ export function RegisterPage() {
           {state === "invalid" && (
             <>
               <h1 className="text-2xl font-bold gradient-text">
-                Invitacion no valida
+                {t('register.invalidInvitationTitle')}
               </h1>
               <p className="text-xs text-text-muted mt-2 text-center">
                 {errorMessage}
@@ -175,10 +177,10 @@ export function RegisterPage() {
           {state === "form" && (
             <>
               <h1 className="text-2xl font-bold gradient-text">
-                Crear tu cuenta
+                {t('register.createAccount')}
               </h1>
               <p className="text-xs text-text-muted mt-2 text-center">
-                Estas invitado a unirte{validation?.orgName ? ` a ${validation.orgName}` : ""}
+                {t('register.invitedToJoin')}{validation?.orgName ? ` ${validation.orgName}` : ""}
               </p>
             </>
           )}
@@ -202,7 +204,7 @@ export function RegisterPage() {
               <div className="text-center">
                 <p className="text-sm text-text-muted mb-4">{errorMessage}</p>
                 <Button variant="primary" onClick={() => navigate("/", { replace: true })}>
-                  Ir a iniciar sesion
+                  {t('register.goToLogin')}
                 </Button>
               </div>
             </CardContent>
@@ -221,7 +223,7 @@ export function RegisterPage() {
 
                 {validation?.orgName && (
                   <Input
-                    label="Organizacion"
+                    label={t('register.organization')}
                     value={validation.orgName}
                     disabled
                   />
@@ -229,15 +231,15 @@ export function RegisterPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <Input
-                    label="Nombre"
-                    placeholder="Tu nombre"
+                    label={t('register.firstName')}
+                    placeholder={t('register.firstNamePlaceholder')}
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     autoComplete="given-name"
                   />
                   <Input
-                    label="Apellido"
-                    placeholder="Tu apellido"
+                    label={t('register.lastName')}
+                    placeholder={t('register.lastNamePlaceholder')}
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     autoComplete="family-name"
@@ -253,31 +255,31 @@ export function RegisterPage() {
                     disabled={!firstName.trim() || !lastName.trim()}
                     className="w-full"
                   >
-                    Registrarse con Google
+                    {t('register.registerWithGoogle')}
                   </Button>
                 ) : (
                   <form onSubmit={handleCredentialRegister} className="flex flex-col gap-3">
                     <Input
-                      label="Email"
+                      label={t('common.email')}
                       type="email"
-                      placeholder="tu@email.com"
+                      placeholder={t('register.emailPlaceholder')}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       autoComplete="email"
                       disabled={!!validation?.email}
                     />
                     <Input
-                      label="Contrasena"
+                      label={t('register.passwordLabel')}
                       type="password"
-                      placeholder="Minimo 8 caracteres"
+                      placeholder={t('register.passwordPlaceholder')}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete="new-password"
                     />
                     <Input
-                      label="Confirmar contrasena"
+                      label={t('register.confirmPassword')}
                       type="password"
-                      placeholder="Repite la contrasena"
+                      placeholder={t('register.confirmPasswordPlaceholder')}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       autoComplete="new-password"
@@ -290,7 +292,7 @@ export function RegisterPage() {
                       disabled={!email || !password || !confirmPassword}
                       className="w-full mt-2"
                     >
-                      Crear cuenta
+                      {t('register.createAccountButton')}
                     </Button>
                   </form>
                 )}

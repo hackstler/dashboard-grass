@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../context/AppContext";
 import { useDocuments } from "../../hooks/useDocuments";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
@@ -18,25 +19,26 @@ import {
 import { formatBytes } from "../../utils/format";
 import type { ToastType } from "../../types";
 
-const tabs = [
-  { id: "file", label: "File Upload" },
-  { id: "url", label: "URL" },
-  { id: "text", label: "Text" },
-];
-
 export function KnowledgeUploadPage() {
+  const { t } = useTranslation();
   const { addToast, setActiveView } = useApp();
   const { uploadFile, uploadUrl, uploadText } = useDocuments();
   const [activeTab, setActiveTab] = useState("file");
+
+  const tabs = [
+    { id: "file", label: t('knowledgeUpload.fileUpload') },
+    { id: "url", label: t('knowledgeUpload.url') },
+    { id: "text", label: t('knowledgeUpload.text') },
+  ];
 
   return (
     <div>
       <div className="mb-8 animate-fade-in-up">
         <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-          Upload Content
+          {t('knowledgeUpload.title')}
         </h1>
         <p className="text-sm text-text-muted mt-2">
-          Add files, URLs, or text to your knowledge base for indexing.
+          {t('knowledgeUpload.subtitle')}
         </p>
       </div>
 
@@ -46,7 +48,7 @@ export function KnowledgeUploadPage() {
             <div className="w-7 h-7 rounded-[var(--radius-md)] bg-accent-dim flex items-center justify-center">
               <UploadIcon size={14} className="text-accent" />
             </div>
-            <CardTitle>New Source</CardTitle>
+            <CardTitle>{t('knowledgeUpload.newSource')}</CardTitle>
           </div>
           <Tabs tabs={tabs} activeId={activeTab} onChange={setActiveTab} />
         </CardHeader>
@@ -87,6 +89,7 @@ function FileUploadTab({
   addToast: (msg: string, type: ToastType) => void;
   setActiveView: (view: "knowledge-list") => void;
 }) {
+  const { t } = useTranslation();
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
 
@@ -109,14 +112,14 @@ function FileUploadTab({
           successCount++;
         } else {
           addToast(
-            `Failed to process ${file.name}: ${result.error ?? "unknown error"}`,
+            t('knowledgeUpload.fileProcessFailed', { filename: file.name, error: result.error ?? "unknown error" }),
             "error"
           );
         }
       }
       if (successCount > 0) {
         addToast(
-          `${successCount} file(s) uploaded and indexed`,
+          t('knowledgeUpload.filesUploaded', { count: successCount }),
           "success"
         );
       }
@@ -124,7 +127,7 @@ function FileUploadTab({
       setActiveView("knowledge-list");
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to upload files",
+        err instanceof Error ? err.message : t('knowledgeUpload.uploadFailed'),
         "error"
       );
     } finally {
@@ -162,14 +165,14 @@ function FileUploadTab({
             </div>
           ))}
           <div className="flex items-center justify-between pt-2">
-            <Badge>{files.length} file(s) selected</Badge>
+            <Badge>{t('knowledgeUpload.filesSelected', { count: files.length })}</Badge>
             <Button
               variant="primary"
               size="sm"
               onClick={handleSubmit}
               loading={uploading}
             >
-              Upload all
+              {t('knowledgeUpload.uploadAll')}
             </Button>
           </div>
         </div>
@@ -187,6 +190,7 @@ function UrlUploadTab({
   addToast: (msg: string, type: ToastType) => void;
   setActiveView: (view: "knowledge-list") => void;
 }) {
+  const { t } = useTranslation();
   const [url, setUrl] = useState("");
   const [title, setTitle] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -198,16 +202,16 @@ function UrlUploadTab({
     try {
       const result = await uploadUrl(url, title || undefined);
       if (result.status === "indexed") {
-        addToast("URL ingested and indexed successfully", "success");
+        addToast(t('knowledgeUpload.urlIngested'), "success");
       } else {
-        addToast(`Ingestion failed: ${result.error ?? "unknown error"}`, "error");
+        addToast(t('knowledgeUpload.ingestionFailed', { error: result.error ?? "unknown error" }), "error");
       }
       setUrl("");
       setTitle("");
       setActiveView("knowledge-list");
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to ingest URL",
+        err instanceof Error ? err.message : t('knowledgeUpload.urlIngestFailed'),
         "error"
       );
     } finally {
@@ -218,17 +222,17 @@ function UrlUploadTab({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <Input
-        label="URL"
+        label={t('knowledgeUpload.urlLabel')}
         type="url"
-        placeholder="https://example.com/docs"
+        placeholder={t('knowledgeUpload.urlPlaceholder')}
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         icon={<LinkIcon size={16} />}
       />
       <Input
-        label="Title (optional)"
+        label={t('knowledgeUpload.titleOptional')}
         type="text"
-        placeholder="Override the auto-detected title"
+        placeholder={t('knowledgeUpload.titlePlaceholder')}
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
@@ -240,7 +244,7 @@ function UrlUploadTab({
           loading={uploading}
           disabled={!url}
         >
-          Ingest URL
+          {t('knowledgeUpload.ingestUrl')}
         </Button>
       </div>
     </form>
@@ -256,6 +260,7 @@ function TextUploadTab({
   addToast: (msg: string, type: ToastType) => void;
   setActiveView: (view: "knowledge-list") => void;
 }) {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -267,16 +272,16 @@ function TextUploadTab({
     try {
       const result = await uploadText(content, name);
       if (result.status === "indexed") {
-        addToast("Text content uploaded and indexed", "success");
+        addToast(t('knowledgeUpload.textUploaded'), "success");
       } else {
-        addToast(`Processing failed: ${result.error ?? "unknown error"}`, "error");
+        addToast(t('knowledgeUpload.ingestionFailed', { error: result.error ?? "unknown error" }), "error");
       }
       setName("");
       setContent("");
       setActiveView("knowledge-list");
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to upload text",
+        err instanceof Error ? err.message : t('knowledgeUpload.textUploadFailed'),
         "error"
       );
     } finally {
@@ -287,23 +292,22 @@ function TextUploadTab({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <Input
-        label="Name"
+        label={t('knowledgeUpload.nameLabel')}
         type="text"
-        placeholder="Name for this text source"
+        placeholder={t('knowledgeUpload.namePlaceholder')}
         value={name}
         onChange={(e) => setName(e.target.value)}
         icon={<TypeIcon size={16} />}
       />
       <Textarea
-        label="Content"
-        placeholder="Paste or type your content here..."
+        label={t('knowledgeUpload.contentLabel')}
+        placeholder={t('knowledgeUpload.contentPlaceholder')}
         value={content}
         onChange={(e) => setContent(e.target.value)}
         charCount
       />
       <p className="text-xs text-text-dim">
-        Text will be uploaded as a .txt file and processed by the ingestion
-        pipeline.
+        {t('knowledgeUpload.textNote')}
       </p>
       <div className="flex justify-end pt-2">
         <Button
@@ -313,7 +317,7 @@ function TextUploadTab({
           loading={uploading}
           disabled={!name || !content}
         >
-          Upload text
+          {t('knowledgeUpload.uploadText')}
         </Button>
       </div>
     </form>

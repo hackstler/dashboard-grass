@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuthAdapter } from "../../hooks/useAuthAdapter";
 import { Card, CardContent } from "../ui/Card";
 import { Input } from "../ui/Input";
@@ -9,6 +10,7 @@ interface LoginPageProps {
 }
 
 export function LoginPage({ onLogin }: LoginPageProps) {
+  const { t } = useTranslation();
   const adapter = useAuthAdapter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +24,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       if (completed && !cancelled) onLogin();
     }).catch((err) => {
       console.error("[LoginPage] Redirect result failed:", err);
-      if (!cancelled) setError(err instanceof Error ? err.message : "Sign-in failed");
+      if (!cancelled) setError(err instanceof Error ? err.message : t('login.signInFailed'));
     });
     return () => { cancelled = true; };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -35,7 +37,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       await adapter.loginWithCredentials(email, password);
       onLogin();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Invalid credentials");
+      setError(err instanceof Error ? err.message : t('login.invalidCredentials'));
     } finally {
       setLoading(false);
     }
@@ -49,7 +51,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       onLogin();
     } catch (err) {
       console.error("[LoginPage] Google login failed:", err);
-      setError(err instanceof Error ? err.message : "Sign-in failed");
+      setError(err instanceof Error ? err.message : t('login.signInFailed'));
     } finally {
       setLoading(false);
     }
@@ -70,12 +72,12 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             <span className="text-white text-2xl font-bold">A</span>
           </div>
           <h1 className="text-2xl font-bold gradient-text">
-            Sign in to your account
+            {t('login.signIn')}
           </h1>
           <p className="text-xs text-text-muted mt-2">
             {isFirebase
-              ? "Sign in with your Google account"
-              : "Enter your credentials to continue"}
+              ? t('login.signInGoogle')
+              : t('login.enterCredentials')}
           </p>
         </div>
 
@@ -96,22 +98,22 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   loading={loading}
                   className="w-full"
                 >
-                  Sign in with Google
+                  {t('login.signInGoogleButton')}
                 </Button>
               ) : (
                 <form onSubmit={handleCredentialLogin} className="flex flex-col gap-3">
                   <Input
-                    label="Email"
+                    label={t('login.email')}
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={t('login.emailPlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     autoComplete="email"
                   />
                   <Input
-                    label="Password"
+                    label={t('login.password')}
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder={t('login.passwordPlaceholder')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete="current-password"
@@ -124,7 +126,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                     disabled={!email || !password}
                     className="w-full mt-2"
                   >
-                    Sign in
+                    {t('login.signInButton')}
                   </Button>
                 </form>
               )}

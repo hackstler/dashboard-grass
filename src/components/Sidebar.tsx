@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useApp } from "../context/AppContext";
 import { usePermissions } from "../hooks/usePermissions";
 import { VIEW_PERMISSIONS } from "../permissions";
@@ -19,29 +20,11 @@ import type { ReactNode } from "react";
 
 interface NavItem {
   id: ActiveView;
-  label: string;
+  labelKey: string;
   icon: ReactNode;
   requiredPermission?: Permission;
   section: "main" | "admin" | "super";
 }
-
-/**
- * Navigation items — requiredPermission is derived from VIEW_PERMISSIONS
- * where available, or set explicitly for items not in that map.
- */
-const allNavItems: NavItem[] = [
-  { id: "overview", label: "Overview", icon: <HomeIcon size={18} />, section: "main" },
-  { id: "whatsapp", label: "Channels", icon: <MessageCircleIcon size={18} />, section: "main" },
-  { id: "knowledge-upload", label: "Upload", icon: <UploadIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["knowledge-upload"], section: "main" },
-  { id: "knowledge-list", label: "Knowledge Base", icon: <DatabaseIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["knowledge-list"], section: "main" },
-  { id: "quotes", label: "Quotes", icon: <FileTextIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["quotes"], section: "main" },
-  { id: "settings", label: "Settings", icon: <SettingsIcon size={18} />, section: "main" },
-  { id: "my-organization", label: "My Organization", icon: <BuildingIcon size={18} />, requiredPermission: "view_own_org", section: "main" },
-  { id: "users", label: "Users", icon: <UsersIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["users"], section: "admin" },
-  { id: "catalogs", label: "Catalog", icon: <TagIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["catalogs"], section: "admin" },
-  { id: "organizations", label: "Organizations", icon: <BuildingIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["organizations"], section: "super" },
-  { id: "whatsapp-connections", label: "WhatsApp Mgmt", icon: <MessageCircleIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["whatsapp-connections"], section: "super" },
-];
 
 interface SidebarProps {
   onLogout: () => void;
@@ -50,8 +33,27 @@ interface SidebarProps {
 }
 
 export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
+  const { t } = useTranslation();
   const { user, activeView, setActiveView } = useApp();
   const { can } = usePermissions();
+
+  /**
+   * Navigation items — requiredPermission is derived from VIEW_PERMISSIONS
+   * where available, or set explicitly for items not in that map.
+   */
+  const allNavItems: NavItem[] = [
+    { id: "overview", labelKey: "nav.overview", icon: <HomeIcon size={18} />, section: "main" },
+    { id: "whatsapp", labelKey: "nav.channels", icon: <MessageCircleIcon size={18} />, section: "main" },
+    { id: "knowledge-upload", labelKey: "nav.upload", icon: <UploadIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["knowledge-upload"], section: "main" },
+    { id: "knowledge-list", labelKey: "nav.knowledgeBase", icon: <DatabaseIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["knowledge-list"], section: "main" },
+    { id: "quotes", labelKey: "nav.quotes", icon: <FileTextIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["quotes"], section: "main" },
+    { id: "settings", labelKey: "nav.settings", icon: <SettingsIcon size={18} />, section: "main" },
+    { id: "my-organization", labelKey: "nav.myOrganization", icon: <BuildingIcon size={18} />, requiredPermission: "view_own_org", section: "main" },
+    { id: "users", labelKey: "nav.users", icon: <UsersIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["users"], section: "admin" },
+    { id: "catalogs", labelKey: "nav.catalog", icon: <TagIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["catalogs"], section: "admin" },
+    { id: "organizations", labelKey: "nav.organizations", icon: <BuildingIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["organizations"], section: "super" },
+    { id: "whatsapp-connections", labelKey: "nav.whatsappMgmt", icon: <MessageCircleIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["whatsapp-connections"], section: "super" },
+  ];
 
   const visibleItems = allNavItems.filter((item) => {
     return !item.requiredPermission || can(item.requiredPermission);
@@ -81,7 +83,7 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
         <span className={`shrink-0 transition-transform duration-200 ${active ? "scale-110" : ""}`}>
           {item.icon}
         </span>
-        {item.label}
+        {t(item.labelKey)}
       </button>
     );
   };
@@ -110,7 +112,7 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
               <span className="text-white text-sm font-bold">A</span>
             </div>
             <span className="font-semibold text-sm gradient-text tracking-tight">
-              Agent Dashboard
+              {t('nav.agentDashboard')}
             </span>
           </div>
         </div>
@@ -151,7 +153,7 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
           <button
             onClick={onLogout}
             className="btn-press text-text-dim hover:text-red transition-colors cursor-pointer p-1.5 rounded-[var(--radius-sm)] hover:bg-red-muted"
-            title="Logout"
+            title={t('common.logout')}
           >
             <LogOutIcon size={16} />
           </button>

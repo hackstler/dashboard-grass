@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import type { DragEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { UploadIcon } from "./Icons";
 
 interface FileDropzoneProps {
@@ -15,6 +16,7 @@ export function FileDropzone({
   maxSizeMB = 10,
   multiple = true,
 }: FileDropzoneProps) {
+  const { t } = useTranslation();
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,7 +30,7 @@ export function FileDropzone({
 
       for (const file of Array.from(files)) {
         if (file.size > maxBytes) {
-          setError(`${file.name} exceeds ${maxSizeMB}MB limit`);
+          setError(t('knowledgeUpload.exceedsLimit', { filename: file.name, size: maxSizeMB }));
           return;
         }
         valid.push(file);
@@ -84,11 +86,11 @@ export function FileDropzone({
         </div>
         <div className="text-center">
           <p className="text-sm text-text-muted">
-            <span className="text-accent font-medium">Click to upload</span> or
-            drag and drop
+            <span className="text-accent font-medium">{t('knowledgeUpload.clickToUpload')}</span>{" "}
+            {t('knowledgeUpload.dragAndDrop')}
           </p>
           <p className="text-xs text-text-dim mt-1">
-            Max {maxSizeMB}MB per file
+            {t('knowledgeUpload.maxSize', { size: maxSizeMB })}
           </p>
         </div>
         <input

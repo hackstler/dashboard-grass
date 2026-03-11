@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../context/AppContext";
 import { usePermissions } from "../../hooks/usePermissions";
 import { useUsers } from "../../hooks/useUsers";
@@ -16,6 +17,7 @@ import { SearchIcon, TrashIcon, UsersIcon, PlusIcon, EditIcon } from "../ui/Icon
 import { formatDate } from "../../utils/format";
 
 export function UsersPage() {
+  const { t } = useTranslation();
   const { user, addToast } = useApp();
   const { can } = usePermissions();
   const { strategyName: strategy } = useAuthAdapter();
@@ -97,12 +99,12 @@ export function UsersPage() {
           role: newRole,
         });
       }
-      addToast(strategy === "firebase" ? "User invited" : "User created", "success");
+      addToast(strategy === "firebase" ? t('users.userInvited') : t('users.userCreated'), "success");
       setShowCreate(false);
       resetCreateForm();
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to create user",
+        err instanceof Error ? err.message : t('users.createFailed'),
         "error"
       );
     } finally {
@@ -115,11 +117,11 @@ export function UsersPage() {
     setDeleting(true);
     try {
       await deleteUser(deleteTarget.id);
-      addToast("User deleted", "success");
+      addToast(t('users.userDeleted'), "success");
       setDeleteTarget(null);
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to delete user",
+        err instanceof Error ? err.message : t('users.deleteFailed'),
         "error"
       );
     } finally {
@@ -139,12 +141,12 @@ export function UsersPage() {
       if (editPassword) data.password = editPassword;
       if (editOrgId !== editTarget.orgId) data.orgId = editOrgId;
       await editUser(editTarget.id, data);
-      addToast("User updated", "success");
+      addToast(t('users.userUpdated'), "success");
       setEditTarget(null);
       resetEditForm();
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to update user",
+        err instanceof Error ? err.message : t('users.updateFailed'),
         "error"
       );
     } finally {
@@ -179,11 +181,11 @@ export function UsersPage() {
         role: inviteRole,
       });
       setInviteUrl(result.inviteUrl);
-      addToast("Invitación creada", "success");
+      addToast(t('users.invitationCreated'), "success");
       fetchInvitations();
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Error al crear invitación",
+        err instanceof Error ? err.message : t('users.invitationCreateFailed'),
         "error",
       );
     } finally {
@@ -195,10 +197,10 @@ export function UsersPage() {
     try {
       await revokeInvitation(id);
       setInvitations((prev) => prev.filter((i) => i.id !== id));
-      addToast("Invitación revocada", "success");
+      addToast(t('users.invitationRevoked'), "success");
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Error al revocar invitación",
+        err instanceof Error ? err.message : t('users.invitationRevokeFailed'),
         "error",
       );
     }
@@ -238,10 +240,10 @@ export function UsersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 animate-fade-in-up">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-            Users
+            {t('users.title')}
           </h1>
           <p className="text-sm text-text-muted mt-2">
-            Manage users across all organizations.
+            {t('users.subtitle')}
           </p>
         </div>
         {can("create_org_users") && (
@@ -258,7 +260,7 @@ export function UsersPage() {
                 setCopied(false);
               }}
             >
-              Invite via Link
+              {t('users.inviteViaLink')}
             </Button>
             <Button
               variant="primary"
@@ -266,7 +268,7 @@ export function UsersPage() {
               icon={<PlusIcon size={16} />}
               onClick={() => setShowCreate(true)}
             >
-              {strategy === "firebase" ? "Invite User" : "Create User"}
+              {strategy === "firebase" ? t('users.inviteUser') : t('users.createUser')}
             </Button>
           </div>
         )}
@@ -274,14 +276,14 @@ export function UsersPage() {
 
       <div className="flex flex-wrap items-center gap-3 mb-6 animate-fade-in-up stagger-1">
         <Input
-          placeholder="Search by name or email..."
+          placeholder={t('users.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           icon={<SearchIcon size={16} />}
           className="w-full sm:w-64"
         />
         <Input
-          placeholder="Filter by orgId..."
+          placeholder={t('users.filterByOrg')}
           value={orgFilter}
           onChange={(e) => setOrgFilter(e.target.value)}
           className="w-full sm:w-48"
@@ -314,13 +316,13 @@ export function UsersPage() {
         <Card>
           <EmptyState
             icon={<UsersIcon size={40} />}
-            title="No users found"
+            title={t('users.noUsers')}
             description={
               search || orgFilter
-                ? "Try adjusting your filters."
+                ? t('users.adjustFilters')
                 : strategy === "firebase"
-                  ? "Invite your first user to get started."
-                  : "Create your first user to get started."
+                  ? t('users.inviteFirst')
+                  : t('users.createFirst')
             }
             action={
               !search && !orgFilter ? (
@@ -330,7 +332,7 @@ export function UsersPage() {
                   icon={<PlusIcon size={16} />}
                   onClick={() => setShowCreate(true)}
                 >
-                  Create User
+                  {t('users.createUser')}
                 </Button>
               ) : undefined
             }
@@ -351,7 +353,7 @@ export function UsersPage() {
                 <p className="text-sm text-text-bright font-medium truncate">
                   {displayName(u)}
                   {isSelf(u) && (
-                    <span className="text-xs text-text-dim ml-2">(you)</span>
+                    <span className="text-xs text-text-dim ml-2">{t('common.you')}</span>
                   )}
                 </p>
                 <div className="flex flex-wrap items-center gap-2 mt-0.5">
@@ -375,7 +377,7 @@ export function UsersPage() {
                 <button
                   onClick={() => openEditModal(u)}
                   className="btn-press transition-all cursor-pointer p-1.5 rounded-[var(--radius-sm)] text-text-dim hover:text-accent hover:bg-accent/10"
-                  title="Edit"
+                  title={t('common.edit')}
                 >
                   <EditIcon size={16} />
                 </button>
@@ -384,7 +386,7 @@ export function UsersPage() {
                 <button
                   onClick={() => {
                     if (isSelf(u)) {
-                      addToast("Cannot delete your own account", "error");
+                      addToast(t('users.cannotDeleteSelf'), "error");
                       return;
                     }
                     setDeleteTarget(u);
@@ -394,7 +396,7 @@ export function UsersPage() {
                       ? "text-text-dim/30 cursor-not-allowed"
                       : "text-text-dim hover:text-red hover:bg-red-muted"
                   }`}
-                  title={isSelf(u) ? "Cannot delete yourself" : "Delete"}
+                  title={isSelf(u) ? t('users.cannotDeleteSelf') : t('common.delete')}
                   disabled={isSelf(u)}
                 >
                   <TrashIcon size={16} />
@@ -412,47 +414,47 @@ export function UsersPage() {
           setShowCreate(false);
           resetCreateForm();
         }}
-        title={strategy === "firebase" ? "Invite User" : "Create User"}
+        title={strategy === "firebase" ? t('users.inviteUser') : t('users.createUser')}
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="Name"
-              placeholder="First name"
+              label={t('common.name')}
+              placeholder={t('users.firstNamePlaceholder')}
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
             />
             <Input
-              label="Surname"
-              placeholder="Last name"
+              label={t('profile.surname')}
+              placeholder={t('users.lastNamePlaceholder')}
               value={newSurname}
               onChange={(e) => setNewSurname(e.target.value)}
             />
           </div>
           <Input
-            label="Email"
+            label={t('common.email')}
             type="email"
-            placeholder="user@example.com"
+            placeholder={t('users.emailPlaceholder')}
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
           />
           {strategy !== "firebase" && (
             <Input
-              label="Password"
+              label={t('common.password')}
               type="password"
-              placeholder="Min 8 characters"
+              placeholder={t('users.passwordPlaceholder')}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
           )}
           <Input
-            label="Organization ID"
-            placeholder="my-org"
+            label={t('users.orgIdLabel')}
+            placeholder={t('users.orgIdPlaceholder')}
             value={newOrgId}
             onChange={(e) => setNewOrgId(e.target.value)}
           />
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-text-muted">Role</label>
+            <label className="text-xs font-medium text-text-muted">{t('common.role')}</label>
             <select
               value={newRole}
               onChange={(e) =>
@@ -460,9 +462,9 @@ export function UsersPage() {
               }
               className="w-full bg-surface border border-border text-text text-sm px-3 py-2 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer"
             >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-              <option value="super_admin">Super Admin</option>
+              <option value="user">{t('users.roleUser')}</option>
+              <option value="admin">{t('users.roleAdmin')}</option>
+              <option value="super_admin">{t('users.roleSuperAdmin')}</option>
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-2">
@@ -474,7 +476,7 @@ export function UsersPage() {
                 resetCreateForm();
               }}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               variant="primary"
@@ -483,7 +485,7 @@ export function UsersPage() {
               loading={creating}
               disabled={isCreateDisabled}
             >
-              {strategy === "firebase" ? "Invite" : "Create"}
+              {strategy === "firebase" ? t('users.invite') : t('common.create')}
             </Button>
           </div>
         </div>
@@ -496,32 +498,32 @@ export function UsersPage() {
           setEditTarget(null);
           resetEditForm();
         }}
-        title="Edit User"
+        title={t('users.editUser')}
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="Name"
-              placeholder="First name"
+              label={t('common.name')}
+              placeholder={t('users.firstNamePlaceholder')}
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
             />
             <Input
-              label="Surname"
-              placeholder="Last name"
+              label={t('profile.surname')}
+              placeholder={t('users.lastNamePlaceholder')}
               value={editSurname}
               onChange={(e) => setEditSurname(e.target.value)}
             />
           </div>
           <Input
-            label="Email"
+            label={t('common.email')}
             type="email"
-            placeholder="user@example.com"
+            placeholder={t('users.emailPlaceholder')}
             value={editEmail}
             onChange={(e) => setEditEmail(e.target.value)}
           />
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-text-muted">Role</label>
+            <label className="text-xs font-medium text-text-muted">{t('common.role')}</label>
             <select
               value={editRole}
               onChange={(e) =>
@@ -529,24 +531,24 @@ export function UsersPage() {
               }
               className="w-full bg-surface border border-border text-text text-sm px-3 py-2 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer"
             >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-              <option value="super_admin">Super Admin</option>
+              <option value="user">{t('users.roleUser')}</option>
+              <option value="admin">{t('users.roleAdmin')}</option>
+              <option value="super_admin">{t('users.roleSuperAdmin')}</option>
             </select>
           </div>
           {user?.role === "super_admin" && (
             <Input
-              label="Organization ID"
-              placeholder="org-id"
+              label={t('users.orgIdLabel')}
+              placeholder={t('users.orgIdPlaceholder')}
               value={editOrgId}
               onChange={(e) => setEditOrgId(e.target.value)}
             />
           )}
           {strategy !== "firebase" && (
             <Input
-              label="Password (leave blank to keep current)"
+              label={t('users.passwordKeepBlank')}
               type="password"
-              placeholder="New password"
+              placeholder={t('users.newPasswordPlaceholder')}
               value={editPassword}
               onChange={(e) => setEditPassword(e.target.value)}
             />
@@ -560,7 +562,7 @@ export function UsersPage() {
                 resetEditForm();
               }}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               variant="primary"
@@ -569,7 +571,7 @@ export function UsersPage() {
               loading={editing}
               disabled={!editEmail}
             >
-              Save
+              {t('common.save')}
             </Button>
           </div>
         </div>
@@ -579,7 +581,7 @@ export function UsersPage() {
       {invitations.length > 0 && (
         <div className="mt-8 animate-fade-in-up">
           <h2 className="text-lg font-semibold text-text-bright mb-4">
-            Invitaciones pendientes
+            {t('users.pendingInvitations')}
           </h2>
           <div className="space-y-2">
             {invitations.map((inv) => (
@@ -589,11 +591,11 @@ export function UsersPage() {
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-text-bright font-medium truncate">
-                    {inv.email ?? "Sin email"}
+                    {inv.email ?? t('users.noEmail')}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-xs text-text-dim">
-                      Expira: {formatDate(inv.expiresAt)}
+                      {t('users.expires', { date: formatDate(inv.expiresAt) })}
                     </span>
                   </div>
                 </div>
@@ -601,7 +603,7 @@ export function UsersPage() {
                 <button
                   onClick={() => handleRevokeInvitation(inv.id)}
                   className="btn-press transition-all cursor-pointer p-1.5 rounded-[var(--radius-sm)] text-text-dim hover:text-red hover:bg-red-muted"
-                  title="Revocar"
+                  title={t('users.revoke')}
                 >
                   <TrashIcon size={16} />
                 </button>
@@ -615,23 +617,22 @@ export function UsersPage() {
       <Modal
         open={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
-        title="Delete User"
+        title={t('users.deleteUser')}
       >
         <div className="space-y-4">
-          <p className="text-sm text-text-muted">
-            Are you sure you want to delete{" "}
-            <span className="text-text-bright font-medium">
-              {deleteTarget ? displayName(deleteTarget) : ""}
-            </span>
-            ? This will also delete all their conversations and messages.
-          </p>
+          <p
+            className="text-sm text-text-muted"
+            dangerouslySetInnerHTML={{
+              __html: t('users.deleteUserConfirm', { name: deleteTarget ? displayName(deleteTarget) : "" }),
+            }}
+          />
           <div className="flex justify-end gap-3">
             <Button
               variant="secondary"
               size="sm"
               onClick={() => setDeleteTarget(null)}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               variant="danger"
@@ -639,7 +640,7 @@ export function UsersPage() {
               onClick={handleDelete}
               loading={deleting}
             >
-              Delete
+              {t('common.delete')}
             </Button>
           </div>
         </div>
@@ -652,13 +653,13 @@ export function UsersPage() {
           setShowInvite(false);
           setInviteUrl(null);
         }}
-        title="Invitar usuario via link"
+        title={t('users.inviteViaLinkTitle')}
       >
         <div className="space-y-4">
           {inviteUrl ? (
             <>
               <p className="text-sm text-text-muted">
-                Comparte este enlace con el usuario:
+                {t('users.shareLink')}
               </p>
               <div className="flex items-center gap-2">
                 <input
@@ -671,7 +672,7 @@ export function UsersPage() {
                   size="sm"
                   onClick={handleCopyInviteUrl}
                 >
-                  {copied ? "Copiado!" : "Copiar"}
+                  {copied ? t('common.copied') : t('common.copy')}
                 </Button>
               </div>
               <div className="flex justify-end pt-2">
@@ -683,28 +684,28 @@ export function UsersPage() {
                     setInviteUrl(null);
                   }}
                 >
-                  Cerrar
+                  {t('common.close')}
                 </Button>
               </div>
             </>
           ) : (
             <>
               <Input
-                label="Email (opcional)"
+                label={t('users.emailOptional')}
                 type="email"
-                placeholder="usuario@email.com"
+                placeholder={t('users.emailOptionalPlaceholder')}
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
               />
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-text-muted">Rol</label>
+                <label className="text-xs font-medium text-text-muted">{t('common.role')}</label>
                 <select
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value as "admin" | "user")}
                   className="w-full bg-surface border border-border text-text text-sm px-3 py-2 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer"
                 >
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
+                  <option value="user">{t('users.roleUser')}</option>
+                  <option value="admin">{t('users.roleAdmin')}</option>
                 </select>
               </div>
               <div className="flex justify-end gap-3 pt-2">
@@ -713,7 +714,7 @@ export function UsersPage() {
                   size="sm"
                   onClick={() => setShowInvite(false)}
                 >
-                  Cancelar
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   variant="primary"
@@ -721,7 +722,7 @@ export function UsersPage() {
                   onClick={handleInvite}
                   loading={inviting}
                 >
-                  Crear invitación
+                  {t('users.createInvitation')}
                 </Button>
               </div>
             </>

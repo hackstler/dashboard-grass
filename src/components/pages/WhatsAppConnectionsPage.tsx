@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 import { useApp } from "../../context/AppContext";
 import { getWhatsappConnections, revokeWhatsappConnection } from "../../api/admin";
 import type { WhatsAppConnection } from "../../types";
@@ -13,16 +15,17 @@ import { MessageCircleIcon } from "../ui/Icons";
 function statusBadge(status: string) {
   switch (status) {
     case "connected":
-      return <Badge variant="success">Connected</Badge>;
+      return <Badge variant="success">{i18n.t('common.connected')}</Badge>;
     case "qr":
     case "pending":
-      return <Badge variant="warning">{status === "qr" ? "Awaiting scan" : "Pending"}</Badge>;
+      return <Badge variant="warning">{status === "qr" ? i18n.t('whatsapp.awaitingScan') : i18n.t('common.pending')}</Badge>;
     default:
       return <Badge variant="default">{status}</Badge>;
   }
 }
 
 export function WhatsAppConnectionsPage() {
+  const { t } = useTranslation();
   const { user, addToast } = useApp();
   const [connections, setConnections] = useState<WhatsAppConnection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +39,7 @@ export function WhatsAppConnectionsPage() {
       const data = await getWhatsappConnections();
       setConnections(data);
     } catch {
-      addToast("Failed to load WhatsApp connections", "error");
+      addToast(t('whatsappConnections.loadFailed'), "error");
     } finally {
       setLoading(false);
     }
@@ -53,11 +56,11 @@ export function WhatsAppConnectionsPage() {
     setRevoking(revokeTarget.userId);
     try {
       await revokeWhatsappConnection(revokeTarget.userId);
-      addToast("WhatsApp session revoked", "success");
+      addToast(t('whatsappConnections.sessionRevoked'), "success");
       setRevokeTarget(null);
       await fetchConnections();
     } catch {
-      addToast("Failed to revoke session", "error");
+      addToast(t('whatsappConnections.revokeFailed'), "error");
     } finally {
       setRevoking(null);
     }
@@ -90,10 +93,10 @@ export function WhatsAppConnectionsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 animate-fade-in-up">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-            WhatsApp Connections
+            {t('whatsappConnections.title')}
           </h1>
           <p className="text-sm text-text-muted mt-2">
-            Manage active WhatsApp sessions{isSuperAdmin ? " across all organizations" : ""}.
+            {t('whatsappConnections.subtitle')}{isSuperAdmin ? t('whatsappConnections.subtitleAllOrgs') : ""}.
           </p>
         </div>
       </div>
@@ -102,8 +105,8 @@ export function WhatsAppConnectionsPage() {
         <Card>
           <EmptyState
             icon={<MessageCircleIcon size={40} />}
-            title="No active sessions"
-            description="No WhatsApp sessions are currently active."
+            title={t('whatsappConnections.noSessions')}
+            description={t('whatsappConnections.noSessionsDescription')}
           />
         </Card>
       ) : (
@@ -131,7 +134,7 @@ export function WhatsAppConnectionsPage() {
                     </>
                   )}
                   <span className="text-xs text-text-dim">
-                    {conn.phone ?? "No phone"}
+                    {conn.phone ?? t('common.noPhone')}
                   </span>
                   <span className="text-text-dim">&middot;</span>
                   <span className="text-xs text-text-dim">
@@ -146,7 +149,7 @@ export function WhatsAppConnectionsPage() {
                 onClick={() => setRevokeTarget(conn)}
                 loading={revoking === conn.userId}
               >
-                Revoke
+                {t('whatsappConnections.revoke')}
               </Button>
             </div>
           ))}
@@ -156,19 +159,20 @@ export function WhatsAppConnectionsPage() {
       <Modal
         open={revokeTarget !== null}
         onClose={() => setRevokeTarget(null)}
-        title="Revoke WhatsApp Session"
+        title={t('whatsappConnections.revokeSession')}
       >
         <div className="space-y-4">
-          <p className="text-sm text-text-muted">
-            Are you sure you want to disconnect WhatsApp for{" "}
-            <span className="text-text-bright font-medium">
-              {revokeTarget?.userEmail ?? revokeTarget?.userId}
-            </span>
-            ? The session will be terminated within ~3 minutes.
-          </p>
+          <p
+            className="text-sm text-text-muted"
+            dangerouslySetInnerHTML={{
+              __html: t('whatsappConnections.revokeConfirm', {
+                name: revokeTarget?.userEmail ?? revokeTarget?.userId,
+              }),
+            }}
+          />
           <div className="flex justify-end gap-3">
             <Button variant="secondary" size="sm" onClick={() => setRevokeTarget(null)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               variant="danger"
@@ -176,7 +180,7 @@ export function WhatsAppConnectionsPage() {
               onClick={handleRevoke}
               loading={revoking !== null}
             >
-              Revoke Session
+              {t('whatsappConnections.revokeSessionButton')}
             </Button>
           </div>
         </div>

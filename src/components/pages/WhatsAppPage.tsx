@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 import { useApp } from "../../context/AppContext";
 import { useChannels } from "../../hooks/useChannels";
 import QRCode from "qrcode";
@@ -31,21 +33,22 @@ function getBadgeProps(statusValue: string | undefined): {
 } {
   switch (statusValue) {
     case "connected":
-      return { variant: "success", pulse: true, label: "Connected" };
+      return { variant: "success", pulse: true, label: i18n.t("common.connected") };
     case "qr":
-      return { variant: "warning", pulse: false, label: "Awaiting scan" };
+      return { variant: "warning", pulse: false, label: i18n.t("whatsapp.awaitingScan") };
     case "code":
-      return { variant: "warning", pulse: false, label: "Awaiting code" };
+      return { variant: "warning", pulse: false, label: i18n.t("whatsapp.awaitingCode") };
     case "pending":
-      return { variant: "warning", pulse: false, label: "Enabling..." };
+      return { variant: "warning", pulse: false, label: i18n.t("whatsapp.enabling") };
     case "not_enabled":
-      return { variant: "default", pulse: false, label: "Not enabled" };
+      return { variant: "default", pulse: false, label: i18n.t("whatsapp.notEnabled") };
     default:
-      return { variant: "default", pulse: false, label: "Disconnected" };
+      return { variant: "default", pulse: false, label: i18n.t("common.disconnected") };
   }
 }
 
 export function WhatsAppPage() {
+  const { t } = useTranslation();
   const { addToast } = useApp();
   const { status, qrData, pairingCode, loading, enable, disconnect } =
     useChannels();
@@ -60,9 +63,9 @@ export function WhatsAppPage() {
     setEnabling(true);
     try {
       await enable(linkingMethod, phoneNumber);
-      addToast("WhatsApp session created", "success");
+      addToast(t('whatsapp.sessionCreated'), "success");
     } catch {
-      addToast("Failed to enable WhatsApp", "error");
+      addToast(t('whatsapp.enableFailed'), "error");
     } finally {
       setEnabling(false);
     }
@@ -72,9 +75,9 @@ export function WhatsAppPage() {
     setDisconnecting(true);
     try {
       await disconnect();
-      addToast("WhatsApp disconnected", "success");
+      addToast(t('whatsapp.disconnected'), "success");
     } catch {
-      addToast("Failed to disconnect", "error");
+      addToast(t('whatsapp.disconnectFailed'), "error");
     } finally {
       setDisconnecting(false);
     }
@@ -130,10 +133,10 @@ export function WhatsAppPage() {
     <div>
       <div className="mb-8 animate-fade-in-up">
         <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-          WhatsApp
+          {t('whatsapp.title')}
         </h1>
         <p className="text-sm text-text-muted mt-2">
-          Manage your WhatsApp channel connection.
+          {t('whatsapp.subtitle')}
         </p>
       </div>
 
@@ -144,7 +147,7 @@ export function WhatsAppPage() {
               <div className="w-7 h-7 rounded-[var(--radius-md)] bg-green-muted flex items-center justify-center">
                 <MessageCircleIcon size={14} className="text-green" />
               </div>
-              <CardTitle>Channel Status</CardTitle>
+              <CardTitle>{t('whatsapp.channelStatus')}</CardTitle>
             </div>
             {loading && !status ? (
               <Skeleton className="h-5 w-24" />
@@ -155,7 +158,7 @@ export function WhatsAppPage() {
             )}
           </div>
           <CardDescription>
-            Connect WhatsApp to receive and send messages through the agent.
+            {t('whatsapp.connectDescription')}
           </CardDescription>
         </CardHeader>
 
@@ -174,6 +177,7 @@ function ConnectedContent({
   onDisconnect: () => void;
   disconnecting: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4 animate-fade-in">
       <div className="flex items-center gap-4 p-3 bg-green-muted rounded-[var(--radius-md)] border border-green/10">
@@ -182,7 +186,7 @@ function ConnectedContent({
         </div>
         <div>
           <p className="text-sm font-medium text-text-bright">
-            WhatsApp Connected
+            {t('whatsapp.whatsappConnected')}
           </p>
           {phone && (
             <p className="text-xs text-text-muted font-mono">{phone}</p>
@@ -195,13 +199,14 @@ function ConnectedContent({
         onClick={onDisconnect}
         loading={disconnecting}
       >
-        Disconnect
+        {t('common.disconnect')}
       </Button>
     </div>
   );
 }
 
 function QrContent({ qrData }: { qrData: string | null }) {
+  const { t } = useTranslation();
   const [qrImage, setQrImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -216,7 +221,7 @@ function QrContent({ qrData }: { qrData: string | null }) {
       <div className="flex flex-col items-center py-8">
         <Skeleton className="w-56 h-56 rounded-[var(--radius-lg)]" />
         <p className="text-xs text-text-muted mt-4 animate-pulse">
-          Generating QR code...
+          {t('whatsapp.generatingQR')}
         </p>
       </div>
     );
@@ -228,10 +233,9 @@ function QrContent({ qrData }: { qrData: string | null }) {
         <img src={qrImage} alt="WhatsApp QR Code" className="w-56 h-56" />
       </div>
       <div className="text-center">
-        <p className="text-sm text-text-muted">Scan with WhatsApp</p>
+        <p className="text-sm text-text-muted">{t('whatsapp.scanWhatsapp')}</p>
         <p className="text-xs text-text-dim mt-1">
-          Open WhatsApp &rarr; Settings &rarr; Linked Devices &rarr; Link a
-          Device
+          {t('whatsapp.openWhatsappQR')}
         </p>
       </div>
     </div>
@@ -247,6 +251,7 @@ function MobileNotEnabledContent({
   onEnable: (linkingMethod: "code", phoneNumber: string) => void;
   enabling: boolean;
 }) {
+  const { t } = useTranslation();
   const [digits, setDigits] = useState("");
   const [foreignError, setForeignError] = useState(false);
 
@@ -282,24 +287,24 @@ function MobileNotEnabledContent({
   }
 
   const errorMessage = foreignError
-    ? "Solo numeros espanoles (+34) por ahora"
+    ? t('whatsapp.spanishOnly')
     : showPatternHint
-      ? "El numero debe empezar por 6 o 7"
+      ? t('whatsapp.startWith67')
       : undefined;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 animate-fade-in">
       <EmptyState
         icon={<MessageCircleIcon size={40} />}
-        title="WhatsApp no activado"
-        description="Introduce tu numero de movil para vincular WhatsApp."
+        title={t('whatsapp.whatsappNotActivated')}
+        description={t('whatsapp.enterPhoneNumber')}
       />
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor="phone-input"
           className="text-xs font-medium text-text-muted"
         >
-          Numero de telefono
+          {t('whatsapp.phoneNumber')}
         </label>
         <div className="flex items-stretch">
           <span className="inline-flex items-center px-3 bg-surface border border-r-0 border-border rounded-l-[var(--radius-md)] text-sm text-text-muted select-none">
@@ -323,7 +328,7 @@ function MobileNotEnabledContent({
         )}
         {showLengthHint && (
           <p className="text-xs text-text-dim">
-            {digits.length}/9 digitos
+            {t('whatsapp.digitsCount', { count: digits.length })}
           </p>
         )}
       </div>
@@ -333,18 +338,19 @@ function MobileNotEnabledContent({
         loading={enabling}
         disabled={!isValid}
       >
-        Vincular WhatsApp
+        {t('whatsapp.linkWhatsapp')}
       </Button>
     </form>
   );
 }
 
 function MobilePendingCodeContent() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center py-8 animate-fade-in">
       <Skeleton className="h-12 w-48 rounded-[var(--radius-md)]" />
       <p className="text-xs text-text-muted mt-4 animate-pulse">
-        Generando codigo...
+        {t('whatsapp.generatingCode')}
       </p>
     </div>
   );
@@ -355,12 +361,13 @@ function PairingCodeContent({
 }: {
   pairingCode: string | null;
 }) {
+  const { t } = useTranslation();
   if (!pairingCode) {
     return (
       <div className="flex flex-col items-center py-8 animate-fade-in">
         <Skeleton className="h-12 w-48 rounded-[var(--radius-md)]" />
         <p className="text-xs text-text-muted mt-4 animate-pulse">
-          Generando codigo...
+          {t('whatsapp.generatingCode')}
         </p>
       </div>
     );
@@ -375,11 +382,10 @@ function PairingCodeContent({
       </div>
       <div className="text-center">
         <p className="text-sm text-text-muted">
-          Introduce este codigo en WhatsApp
+          {t('whatsapp.enterCodeWhatsapp')}
         </p>
         <p className="text-xs text-text-dim mt-1">
-          Abre WhatsApp &rarr; Dispositivos vinculados &rarr; Vincular con
-          numero de telefono &rarr; Introduce este codigo
+          {t('whatsapp.openWhatsappCode')}
         </p>
       </div>
     </div>
@@ -393,26 +399,28 @@ function NotEnabledContent({
   onEnable: () => void;
   enabling: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4 animate-fade-in">
       <EmptyState
         icon={<MessageCircleIcon size={40} />}
-        title="WhatsApp not enabled"
-        description="Enable WhatsApp to connect your personal phone and chat with the AI agent directly from WhatsApp."
+        title={t('whatsapp.notEnabled')}
+        description={t('whatsapp.enableDescription')}
       />
       <Button variant="primary" onClick={() => onEnable()} loading={enabling}>
-        Enable WhatsApp
+        {t('whatsapp.enableWhatsapp')}
       </Button>
     </div>
   );
 }
 
 function PendingContent() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center py-8 animate-fade-in">
       <Skeleton className="w-56 h-56 rounded-[var(--radius-lg)]" />
       <p className="text-xs text-text-muted mt-4 animate-pulse">
-        Waiting for worker to initialize your session...
+        {t('whatsapp.waitingSession')}
       </p>
     </div>
   );

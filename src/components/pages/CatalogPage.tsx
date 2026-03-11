@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useCatalogs } from "../../hooks/useCatalogs";
 import { useApp } from "../../context/AppContext";
 import type { CatalogData, CatalogItemData } from "../../types";
@@ -11,6 +12,7 @@ import { EmptyState } from "../ui/EmptyState";
 import { PlusIcon, TrashIcon, EditIcon, TagIcon, AlertCircleIcon } from "../ui/Icons";
 
 export function CatalogPage() {
+  const { t } = useTranslation();
   const { user } = useApp();
   const isSuperAdmin = user?.role === "super_admin";
   const {
@@ -46,9 +48,9 @@ export function CatalogPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-text-bright">Catalog</h1>
+          <h1 className="text-lg font-semibold text-text-bright">{t('catalog.title')}</h1>
           <p className="text-sm text-text-muted mt-0.5">
-            Manage product catalogs and items
+            {t('catalog.subtitle')}
           </p>
         </div>
         <Button
@@ -57,7 +59,7 @@ export function CatalogPage() {
           icon={<PlusIcon size={14} />}
           onClick={() => setShowCreateCatalog(true)}
         >
-          New Catalog
+          {t('catalog.newCatalog')}
         </Button>
       </div>
 
@@ -77,8 +79,8 @@ export function CatalogPage() {
         ) : catalogs.length === 0 ? (
           <EmptyState
             icon={<TagIcon size={40} />}
-            title="No catalogs"
-            description="Create your first catalog to start managing products."
+            title={t('catalog.noCatalogs')}
+            description={t('catalog.noCatalogsDescription')}
           />
         ) : (
           catalogs.map((catalog) => (
@@ -98,7 +100,7 @@ export function CatalogPage() {
                       {catalog.name}
                     </span>
                     <p className="text-xs text-text-dim mt-0.5">
-                      Effective: {new Date(catalog.effectiveDate).toLocaleDateString()}
+                      {t('catalog.effective', { date: new Date(catalog.effectiveDate).toLocaleDateString() })}
                     </p>
                   </div>
                   {isSuperAdmin && (catalog.orgName || catalog.orgId) && (
@@ -110,7 +112,7 @@ export function CatalogPage() {
                     variant={catalog.isActive ? "success" : "default"}
                     dot
                   >
-                    {catalog.isActive ? "Active" : "Inactive"}
+                    {catalog.isActive ? t('common.active') : t('common.inactive')}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
@@ -120,7 +122,7 @@ export function CatalogPage() {
                       size="sm"
                       onClick={() => activateCatalog(catalog.id)}
                     >
-                      Activate
+                      {t('catalog.activate')}
                     </Button>
                   )}
                   <Button
@@ -147,7 +149,7 @@ export function CatalogPage() {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-text-bright">
-              Items — {selectedCatalog.name}
+              {t('catalog.items', { name: selectedCatalog.name })}
             </h2>
             <Button
               variant="primary"
@@ -155,7 +157,7 @@ export function CatalogPage() {
               icon={<PlusIcon size={14} />}
               onClick={() => setShowCreateItem(true)}
             >
-              Add Item
+              {t('catalog.addItem')}
             </Button>
           </div>
 
@@ -164,8 +166,8 @@ export function CatalogPage() {
           ) : items.length === 0 ? (
             <EmptyState
               icon={<TagIcon size={40} />}
-              title="No items"
-              description="Add items to this catalog."
+              title={t('catalog.noItems')}
+              description={t('catalog.noItemsDescription')}
             />
           ) : (
             <div className="glass border border-border rounded-[var(--radius-md)] overflow-hidden">
@@ -173,13 +175,13 @@ export function CatalogPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border bg-surface-hi/50">
-                      <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">Code</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">Name</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">Category</th>
-                      <th className="text-right px-4 py-2.5 text-xs font-medium text-text-muted">Price</th>
-                      <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">Unit</th>
-                      <th className="text-center px-4 py-2.5 text-xs font-medium text-text-muted">Active</th>
-                      <th className="text-right px-4 py-2.5 text-xs font-medium text-text-muted">Actions</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">{t('catalog.code')}</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">{t('common.name')}</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">{t('catalog.category')}</th>
+                      <th className="text-right px-4 py-2.5 text-xs font-medium text-text-muted">{t('catalog.price')}</th>
+                      <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">{t('catalog.unit')}</th>
+                      <th className="text-center px-4 py-2.5 text-xs font-medium text-text-muted">{t('common.active')}</th>
+                      <th className="text-right px-4 py-2.5 text-xs font-medium text-text-muted">{t('common.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -197,17 +199,17 @@ export function CatalogPage() {
                           {item.priceRange ? (
                             <div className="group relative">
                               <span className="text-accent">
-                                Desde {Math.min(
+                                {t('catalog.from', { price: Math.min(
                                   item.priceRange.solado?.min ?? Infinity,
                                   item.priceRange.tierra?.min ?? Infinity,
-                                ).toFixed(2)} €/m²
+                                ).toFixed(2) })}
                               </span>
                               <div className="absolute right-0 top-full mt-1 z-10 hidden group-hover:block bg-surface-hi border border-border rounded-[var(--radius-md)] px-3 py-2 text-xs text-text-muted whitespace-nowrap shadow-lg">
                                 {item.priceRange.solado && (
-                                  <div>Solado: {item.priceRange.solado.min.toFixed(2)}–{item.priceRange.solado.max.toFixed(2)} €/m²</div>
+                                  <div>{t('catalog.solado', { min: item.priceRange.solado.min.toFixed(2), max: item.priceRange.solado.max.toFixed(2) })}</div>
                                 )}
                                 {item.priceRange.tierra && (
-                                  <div>Tierra: {item.priceRange.tierra.min.toFixed(2)}–{item.priceRange.tierra.max.toFixed(2)} €/m²</div>
+                                  <div>{t('catalog.tierra', { min: item.priceRange.tierra.min.toFixed(2), max: item.priceRange.tierra.max.toFixed(2) })}</div>
                                 )}
                               </div>
                             </div>
@@ -218,7 +220,7 @@ export function CatalogPage() {
                         <td className="px-4 py-2.5 text-text-muted">{item.unit}</td>
                         <td className="px-4 py-2.5 text-center">
                           <Badge variant={item.isActive ? "success" : "default"} dot>
-                            {item.isActive ? "Yes" : "No"}
+                            {item.isActive ? t('common.yes') : t('common.no')}
                           </Badge>
                         </td>
                         <td className="px-4 py-2.5 text-right">
@@ -310,8 +312,8 @@ export function CatalogPage() {
           }
         }}
         loading={deletingCatalog}
-        title="Delete Catalog"
-        message="This will permanently delete this catalog and all its items."
+        title={t('catalog.deleteCatalog')}
+        message={t('catalog.deleteCatalogConfirm')}
       />
 
       {/* Delete Item Confirmation */}
@@ -329,8 +331,8 @@ export function CatalogPage() {
           }
         }}
         loading={deletingItem}
-        title="Delete Item"
-        message="This item will be permanently deleted."
+        title={t('catalog.deleteItem')}
+        message={t('catalog.deleteItemConfirm')}
       />
     </div>
   );
@@ -347,6 +349,7 @@ function CreateCatalogModal({
   onClose: () => void;
   onCreate: (data: { name: string; effectiveDate: string }) => Promise<void>;
 }) {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [effectiveDate, setEffectiveDate] = useState(
     new Date().toISOString().split("T")[0]!,
@@ -368,23 +371,23 @@ function CreateCatalogModal({
   };
 
   return (
-    <Modal open={open} onClose={onClose} title="Create Catalog">
+    <Modal open={open} onClose={onClose} title={t('catalog.createCatalog')}>
       <div className="space-y-4">
         <Input
-          label="Name"
+          label={t('common.name')}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Catalog name"
+          placeholder={t('catalog.catalogName')}
         />
         <Input
-          label="Effective Date"
+          label={t('catalog.effectiveDate')}
           type="date"
           value={effectiveDate}
           onChange={(e) => setEffectiveDate(e.target.value)}
         />
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="ghost" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -392,7 +395,7 @@ function CreateCatalogModal({
             loading={saving}
             disabled={!name.trim()}
           >
-            Create
+            {t('common.create')}
           </Button>
         </div>
       </div>
@@ -413,6 +416,7 @@ function EditCatalogModal({
   onClose: () => void;
   onSave: (data: { name?: string; effectiveDate?: string }) => Promise<void>;
 }) {
+  const { t } = useTranslation();
   const [name, setName] = useState(catalog.name);
   const [effectiveDate, setEffectiveDate] = useState(
     new Date(catalog.effectiveDate).toISOString().split("T")[0]!,
@@ -432,25 +436,25 @@ function EditCatalogModal({
   };
 
   return (
-    <Modal open={open} onClose={onClose} title="Edit Catalog">
+    <Modal open={open} onClose={onClose} title={t('catalog.editCatalog')}>
       <div className="space-y-4">
         <Input
-          label="Name"
+          label={t('common.name')}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <Input
-          label="Effective Date"
+          label={t('catalog.effectiveDate')}
           type="date"
           value={effectiveDate}
           onChange={(e) => setEffectiveDate(e.target.value)}
         />
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="ghost" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="primary" onClick={handleSubmit} loading={saving}>
-            Save
+            {t('common.save')}
           </Button>
         </div>
       </div>
@@ -475,6 +479,7 @@ function CreateItemModal({
     unit: string;
   }) => Promise<void>;
 }) {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -504,36 +509,36 @@ function CreateItemModal({
   };
 
   return (
-    <Modal open={open} onClose={onClose} title="Add Item">
+    <Modal open={open} onClose={onClose} title={t('catalog.addItem')}>
       <div className="space-y-4">
         <Input
-          label="Name"
+          label={t('common.name')}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Product name"
+          placeholder={t('catalog.productName')}
         />
         <Input
-          label="Description"
+          label={t('catalog.description')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Optional description"
+          placeholder={t('catalog.descriptionPlaceholder')}
         />
         <div className="grid grid-cols-2 gap-3">
           <Input
-            label="Category"
+            label={t('catalog.category')}
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            placeholder="Optional"
+            placeholder={t('catalog.categoryPlaceholder')}
           />
           <Input
-            label="Unit"
+            label={t('catalog.unit')}
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
-            placeholder="m², unit, kg..."
+            placeholder={t('catalog.unitPlaceholder')}
           />
         </div>
         <Input
-          label="Price per Unit"
+          label={t('catalog.pricePerUnit')}
           type="number"
           step="0.01"
           min="0"
@@ -543,7 +548,7 @@ function CreateItemModal({
         />
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="ghost" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -551,7 +556,7 @@ function CreateItemModal({
             loading={saving}
             disabled={!name.trim() || !price}
           >
-            Add Item
+            {t('catalog.addItem')}
           </Button>
         </div>
       </div>
@@ -576,6 +581,8 @@ function ConfirmDeleteModal({
   title: string;
   message: string;
 }) {
+  const { t } = useTranslation();
+
   return (
     <Modal open={open} onClose={onClose} title={title}>
       <div className="space-y-4">
@@ -585,7 +592,7 @@ function ConfirmDeleteModal({
         </div>
         <div className="flex justify-end gap-3">
           <Button variant="secondary" size="sm" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             variant="danger"
@@ -593,7 +600,7 @@ function ConfirmDeleteModal({
             onClick={onConfirm}
             loading={loading}
           >
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       </div>
@@ -621,6 +628,7 @@ function EditItemModal({
     isActive?: boolean;
   }) => Promise<void>;
 }) {
+  const { t } = useTranslation();
   const hasVariablePricing = !!item.priceRange;
   const [name, setName] = useState(item.name);
   const [description, setDescription] = useState(item.description ?? "");
@@ -647,43 +655,43 @@ function EditItemModal({
   };
 
   return (
-    <Modal open={open} onClose={onClose} title="Edit Item">
+    <Modal open={open} onClose={onClose} title={t('catalog.editItem')}>
       <div className="space-y-4">
         <Input
-          label="Name"
+          label={t('common.name')}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <Input
-          label="Description"
+          label={t('catalog.description')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
         <div className="grid grid-cols-2 gap-3">
           <Input
-            label="Category"
+            label={t('catalog.category')}
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           />
           <Input
-            label="Unit"
+            label={t('catalog.unit')}
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
           />
         </div>
         {hasVariablePricing ? (
           <div className="text-sm text-text-muted bg-surface-hi/50 border border-border rounded-[var(--radius-md)] px-3 py-2">
-            Precio variable según m² y tipo de suelo
+            {t('catalog.variablePrice')}
             {item.priceRange?.solado && (
-              <span className="block text-xs mt-1">Solado: {item.priceRange.solado.min.toFixed(2)}–{item.priceRange.solado.max.toFixed(2)} €/m²</span>
+              <span className="block text-xs mt-1">{t('catalog.solado', { min: item.priceRange.solado.min.toFixed(2), max: item.priceRange.solado.max.toFixed(2) })}</span>
             )}
             {item.priceRange?.tierra && (
-              <span className="block text-xs">Tierra: {item.priceRange.tierra.min.toFixed(2)}–{item.priceRange.tierra.max.toFixed(2)} €/m²</span>
+              <span className="block text-xs">{t('catalog.tierra', { min: item.priceRange.tierra.min.toFixed(2), max: item.priceRange.tierra.max.toFixed(2) })}</span>
             )}
           </div>
         ) : (
           <Input
-            label="Price per Unit"
+            label={t('catalog.pricePerUnit')}
             type="number"
             step="0.01"
             min="0"
@@ -699,14 +707,14 @@ function EditItemModal({
             onChange={(e) => setIsActive(e.target.checked)}
             className="accent-[var(--color-accent)]"
           />
-          <label htmlFor="isActive" className="text-sm text-text-muted">Active</label>
+          <label htmlFor="isActive" className="text-sm text-text-muted">{t('catalog.isActive')}</label>
         </div>
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="ghost" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="primary" onClick={handleSubmit} loading={saving}>
-            Save
+            {t('common.save')}
           </Button>
         </div>
       </div>

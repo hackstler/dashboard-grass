@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { Sidebar } from "./Sidebar";
 import { ToastContainer } from "./ui/Toast";
 import { MenuIcon } from "./ui/Icons";
@@ -11,6 +12,7 @@ interface LayoutProps {
 }
 
 export function Layout({ onLogout, children }: LayoutProps) {
+  const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { toasts, removeToast } = useApp();
 
@@ -31,7 +33,7 @@ export function Layout({ onLogout, children }: LayoutProps) {
             <MenuIcon size={20} />
           </button>
           <span className="font-semibold text-sm text-text-bright">
-            Agent Dashboard
+            {t('nav.agentDashboard')}
           </span>
         </header>
 

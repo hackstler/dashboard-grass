@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 import { useApp } from "../../context/AppContext";
 import { useChannels } from "../../hooks/useChannels";
 import { completeOnboarding } from "../../api/auth";
@@ -43,21 +45,22 @@ function getStatusBadgeLabel(
 ): string {
   switch (status) {
     case "connected":
-      return "Conectado";
+      return i18n.t("onboarding.whatsappConnected");
     case "qr":
-      return "Esperando escaneo";
+      return i18n.t("onboarding.awaitingScan");
     case "code":
-      return "Esperando codigo";
+      return i18n.t("onboarding.awaitingCode");
     case "pending":
-      return "Activando...";
+      return i18n.t("onboarding.activating");
     default:
-      return "No activado";
+      return i18n.t("onboarding.notActivated");
   }
 }
 
 // ── Sub-components ───────────────────────────────────────────────────────────
 
 function ConnectedContent({ phone }: { phone: string | null }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4 animate-fade-in">
       <div className="flex items-center gap-4 p-3 bg-green-muted rounded-[var(--radius-md)] border border-green/10">
@@ -66,7 +69,7 @@ function ConnectedContent({ phone }: { phone: string | null }) {
         </div>
         <div>
           <p className="text-sm font-medium text-text-bright">
-            WhatsApp Conectado
+            {t('onboarding.whatsappConnected')}
           </p>
           {phone && (
             <p className="text-xs text-text-muted font-mono">{phone}</p>
@@ -82,12 +85,13 @@ function PairingCodeContent({
 }: {
   pairingCode: string | null;
 }) {
+  const { t } = useTranslation();
   if (!pairingCode) {
     return (
       <div className="flex flex-col items-center py-8 animate-fade-in">
         <Skeleton className="h-12 w-48 rounded-[var(--radius-md)]" />
         <p className="text-xs text-text-muted mt-4 animate-pulse">
-          Generando codigo...
+          {t('onboarding.generatingCode')}
         </p>
       </div>
     );
@@ -102,11 +106,10 @@ function PairingCodeContent({
       </div>
       <div className="text-center">
         <p className="text-sm text-text-muted">
-          Introduce este codigo en WhatsApp
+          {t('onboarding.enterCodeWhatsapp')}
         </p>
         <p className="text-xs text-text-dim mt-1">
-          Abre WhatsApp &rarr; Dispositivos vinculados &rarr; Vincular con
-          numero de telefono
+          {t('onboarding.openWhatsappCode')}
         </p>
       </div>
     </div>
@@ -120,6 +123,7 @@ function PhoneInputContent({
   onEnable: (phone: string) => void;
   enabling: boolean;
 }) {
+  const { t } = useTranslation();
   const [digits, setDigits] = useState("");
   const [foreignError, setForeignError] = useState(false);
 
@@ -150,11 +154,11 @@ function PhoneInputContent({
   };
 
   const getError = (): string | undefined => {
-    if (foreignError) return "Solo numeros espanoles (+34) por ahora";
+    if (foreignError) return t('onboarding.spanishOnly');
     if (digits.length > 0 && digits.length < 9)
-      return "Introduce los 9 digitos del numero";
+      return t('onboarding.enterDigits');
     if (digits.length === 9 && !isValid)
-      return "El numero debe empezar por 6 o 7";
+      return t('onboarding.startWith67');
     return undefined;
   };
 
@@ -162,15 +166,15 @@ function PhoneInputContent({
     <form onSubmit={handleSubmit} className="space-y-4 animate-fade-in">
       <EmptyState
         icon={<MessageCircleIcon size={40} />}
-        title="WhatsApp no activado"
-        description="Introduce tu numero de movil para vincular WhatsApp."
+        title={t('onboarding.whatsappNotActivated')}
+        description={t('onboarding.enterPhoneNumber')}
       />
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor="phone-input"
           className="text-xs font-medium text-text-muted"
         >
-          Numero de telefono
+          {t('onboarding.phoneNumber')}
         </label>
         <div className="flex items-stretch gap-0">
           <span className="flex items-center px-3 bg-surface border border-r-0 border-border text-text-muted text-sm rounded-l-[var(--radius-md)] select-none">
@@ -198,13 +202,14 @@ function PhoneInputContent({
         loading={enabling}
         disabled={!isValid}
       >
-        Vincular WhatsApp
+        {t('onboarding.linkWhatsapp')}
       </Button>
     </form>
   );
 }
 
 function QrContent({ qrData }: { qrData: string | null }) {
+  const { t } = useTranslation();
   const [qrImage, setQrImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -222,7 +227,7 @@ function QrContent({ qrData }: { qrData: string | null }) {
       <div className="flex flex-col items-center py-8 animate-fade-in">
         <Skeleton className="w-56 h-56 rounded-[var(--radius-lg)]" />
         <p className="text-xs text-text-muted mt-4 animate-pulse">
-          Generando codigo QR...
+          {t('onboarding.generatingQR')}
         </p>
       </div>
     );
@@ -234,10 +239,9 @@ function QrContent({ qrData }: { qrData: string | null }) {
         <img src={qrImage} alt="WhatsApp QR Code" className="w-56 h-56" />
       </div>
       <div className="text-center">
-        <p className="text-sm text-text-muted">Escanea con WhatsApp</p>
+        <p className="text-sm text-text-muted">{t('onboarding.scanWhatsapp')}</p>
         <p className="text-xs text-text-dim mt-1">
-          Abre WhatsApp &rarr; Ajustes &rarr; Dispositivos vinculados &rarr;
-          Vincular dispositivo
+          {t('onboarding.openWhatsappQR')}
         </p>
       </div>
     </div>
@@ -245,11 +249,12 @@ function QrContent({ qrData }: { qrData: string | null }) {
 }
 
 function PendingQrContent() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center py-8 animate-fade-in">
       <Skeleton className="w-56 h-56 rounded-[var(--radius-lg)]" />
       <p className="text-xs text-text-muted mt-4 animate-pulse">
-        Esperando a que se inicialice tu sesion...
+        {t('onboarding.waitingSession')}
       </p>
     </div>
   );
@@ -262,15 +267,16 @@ function DesktopNotEnabledContent({
   onEnable: () => void;
   enabling: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4 animate-fade-in">
       <EmptyState
         icon={<MessageCircleIcon size={40} />}
-        title="WhatsApp no activado"
-        description="Activa WhatsApp para conectar tu telefono y chatear con el asistente directamente."
+        title={t('onboarding.whatsappNotActivated')}
+        description={t('onboarding.activateDescription')}
       />
       <Button variant="primary" onClick={onEnable} loading={enabling}>
-        Activar WhatsApp
+        {t('onboarding.activateWhatsapp')}
       </Button>
     </div>
   );
@@ -288,6 +294,7 @@ function LoadingContent() {
 // ── Main component ───────────────────────────────────────────────────────────
 
 export function OnboardingPage({ onComplete }: OnboardingPageProps) {
+  const { t } = useTranslation();
   const { authState, addToast } = useApp();
   const { status, qrData, pairingCode, loading, enable } = useChannels();
   const [enabling, setEnabling] = useState(false);
@@ -302,7 +309,7 @@ export function OnboardingPage({ onComplete }: OnboardingPageProps) {
     try {
       await enable(linkingMethod, phone);
     } catch {
-      addToast("Error al activar WhatsApp", "error");
+      addToast(t('onboarding.enableError'), "error");
     } finally {
       setEnabling(false);
     }
@@ -314,7 +321,7 @@ export function OnboardingPage({ onComplete }: OnboardingPageProps) {
       await completeOnboarding();
       onComplete();
     } catch {
-      addToast("Error al completar onboarding", "error");
+      addToast(t('onboarding.completeError'), "error");
     } finally {
       setCompleting(false);
     }
@@ -376,10 +383,10 @@ export function OnboardingPage({ onComplete }: OnboardingPageProps) {
             <span className="text-white text-2xl font-bold">A</span>
           </div>
           <h1 className="text-2xl font-bold gradient-text">
-            {firstName ? `Bienvenido, ${firstName}!` : "Bienvenido!"}
+            {firstName ? t('onboarding.welcome', { name: firstName }) : t('onboarding.welcomeGeneric')}
           </h1>
           <p className="text-xs text-text-muted mt-2 text-center">
-            Configura WhatsApp para chatear con el asistente directamente desde tu telefono
+            {t('onboarding.configureWhatsapp')}
           </p>
         </div>
 
@@ -390,7 +397,7 @@ export function OnboardingPage({ onComplete }: OnboardingPageProps) {
                 <div className="w-7 h-7 rounded-[var(--radius-md)] bg-green-muted flex items-center justify-center">
                   <MessageCircleIcon size={14} className="text-green" />
                 </div>
-                <CardTitle>WhatsApp</CardTitle>
+                <CardTitle>{t('onboarding.whatsapp')}</CardTitle>
               </div>
               {!loading || status ? (
                 <Badge
@@ -405,7 +412,7 @@ export function OnboardingPage({ onComplete }: OnboardingPageProps) {
               )}
             </div>
             <CardDescription>
-              Conecta tu WhatsApp personal para hablar con el asistente.
+              {t('onboarding.connectWhatsapp')}
             </CardDescription>
           </CardHeader>
 
@@ -421,7 +428,7 @@ export function OnboardingPage({ onComplete }: OnboardingPageProps) {
               loading={completing}
               className="px-8"
             >
-              Continuar
+              {t('onboarding.continue')}
             </Button>
           ) : (
             <Button
@@ -430,7 +437,7 @@ export function OnboardingPage({ onComplete }: OnboardingPageProps) {
               onClick={handleComplete}
               loading={completing}
             >
-              Saltar por ahora
+              {t('onboarding.skipForNow')}
             </Button>
           )}
         </div>

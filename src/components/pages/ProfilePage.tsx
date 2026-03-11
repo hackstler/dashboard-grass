@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../context/AppContext";
 import { useAuthAdapter } from "../../hooks/useAuthAdapter";
 import { updateProfile } from "../../api/auth";
@@ -8,6 +9,7 @@ import { Badge } from "../ui/Badge";
 import { SaveIcon } from "../ui/Icons";
 
 export function ProfilePage() {
+  const { t } = useTranslation();
   const { user, addToast, refreshUser } = useApp();
   const adapter = useAuthAdapter();
   const [name, setName] = useState(user?.name ?? "");
@@ -31,18 +33,18 @@ export function ProfilePage() {
     }
     if (password) {
       if (password !== confirmPassword) {
-        addToast("Passwords do not match", "error");
+        addToast(t('profile.passwordsDontMatch'), "error");
         return;
       }
       if (password.length < 8) {
-        addToast("Password must be at least 8 characters", "error");
+        addToast(t('profile.passwordMinLength'), "error");
         return;
       }
       data.password = password;
     }
 
     if (Object.keys(data).length === 0) {
-      addToast("No changes to save", "info");
+      addToast(t('profile.noChanges'), "info");
       return;
     }
 
@@ -50,12 +52,12 @@ export function ProfilePage() {
     try {
       await updateProfile(data);
       await refreshUser();
-      addToast("Profile updated", "success");
+      addToast(t('profile.profileUpdated'), "success");
       setPassword("");
       setConfirmPassword("");
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to update profile",
+        err instanceof Error ? err.message : t('profile.updateFailed'),
         "error"
       );
     } finally {
@@ -74,10 +76,10 @@ export function ProfilePage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-            Profile
+            {t('profile.title')}
           </h1>
           <p className="text-sm text-text-muted mt-2">
-            Manage your account settings.
+            {t('profile.subtitle')}
           </p>
         </div>
       </div>
@@ -86,7 +88,7 @@ export function ProfilePage() {
         {/* Account Info (read-only) */}
         <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up">
           <h2 className="text-sm font-semibold text-text-bright mb-4">
-            Account Info
+            {t('profile.accountInfo')}
           </h2>
           <div className="flex flex-wrap items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent/40 to-brand/30 border border-accent/25 flex items-center justify-center text-base font-semibold text-accent select-none shadow-[0_0_12px_rgba(59,130,246,0.15)]">
@@ -122,20 +124,20 @@ export function ProfilePage() {
         {adapter.supportsPasswordManagement && (
           <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up stagger-1">
             <h2 className="text-sm font-semibold text-text-bright mb-4">
-              Personal Information
+              {t('profile.personalInfo')}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md">
               <Input
-                label="Name"
+                label={t('profile.firstName')}
                 type="text"
-                placeholder="First name"
+                placeholder={t('profile.firstNamePlaceholder')}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
               <Input
-                label="Surname"
+                label={t('profile.surname')}
                 type="text"
-                placeholder="Last name"
+                placeholder={t('profile.surnamePlaceholder')}
                 value={surname}
                 onChange={(e) => setSurname(e.target.value)}
               />
@@ -147,13 +149,13 @@ export function ProfilePage() {
         {adapter.supportsPasswordManagement && (
           <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up stagger-2">
             <h2 className="text-sm font-semibold text-text-bright mb-4">
-              Email
+              {t('profile.emailLabel')}
             </h2>
             <div className="max-w-md">
               <Input
-                label="Email address"
+                label={t('profile.emailAddress')}
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t('profile.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -165,20 +167,20 @@ export function ProfilePage() {
         {adapter.supportsPasswordManagement && (
           <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up stagger-3">
             <h2 className="text-sm font-semibold text-text-bright mb-4">
-              Change Password
+              {t('profile.changePassword')}
             </h2>
             <div className="space-y-4 max-w-md">
               <Input
-                label="New password"
+                label={t('profile.newPassword')}
                 type="password"
-                placeholder="Min 8 characters"
+                placeholder={t('profile.newPasswordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Input
-                label="Confirm password"
+                label={t('profile.confirmPassword')}
                 type="password"
-                placeholder="Repeat new password"
+                placeholder={t('profile.confirmPasswordPlaceholder')}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
@@ -196,7 +198,7 @@ export function ProfilePage() {
               onClick={handleSave}
               loading={saving}
             >
-              Save Changes
+              {t('common.saveChanges')}
             </Button>
           </div>
         )}
@@ -204,8 +206,7 @@ export function ProfilePage() {
         {!adapter.supportsPasswordManagement && (
           <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up stagger-1">
             <p className="text-sm text-text-muted">
-              Your account is managed through Firebase. Use your Google account
-              settings to update your email or password.
+              {t('profile.firebaseManaged')}
             </p>
           </div>
         )}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../context/AppContext";
 import { usePermissions } from "../../hooks/usePermissions";
 import { useChannels } from "../../hooks/useChannels";
@@ -18,6 +19,7 @@ import {
 } from "../ui/Icons";
 
 export function OverviewPage() {
+  const { t } = useTranslation();
   const { user, setActiveView } = useApp();
   const { can } = usePermissions();
   const [orgName, setOrgName] = useState<string | null>(null);
@@ -61,10 +63,10 @@ export function OverviewPage() {
       {/* Header */}
       <div className="mb-10 animate-fade-in-up relative">
         <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-          Overview
+          {t('overview.title')}
         </h1>
         <p className="text-sm text-text-muted mt-2">
-          Monitor your channels and knowledge base at a glance.
+          {t('overview.subtitle')}
         </p>
       </div>
 
@@ -107,14 +109,14 @@ export function OverviewPage() {
                 pulse={waConnected}
               >
                 {waConnected
-                  ? "Connected"
+                  ? t('common.connected')
                   : waQr
-                    ? "Awaiting QR"
+                    ? t('overview.awaitingQR')
                     : waPending
-                      ? "Enabling..."
+                      ? t('overview.enabling')
                       : waNotEnabled
-                        ? "Not enabled"
-                        : "Disconnected"}
+                        ? t('overview.notEnabled')
+                        : t('common.disconnected')}
               </Badge>
             )}
           </div>
@@ -123,24 +125,24 @@ export function OverviewPage() {
               {waLoading && !waStatus ? (
                 <Skeleton className="h-9 w-24 inline-block" />
               ) : waConnected ? (
-                waStatus?.phone ?? "Active"
+                waStatus?.phone ?? t('common.active')
               ) : waPending ? (
-                "Enabling..."
+                t('overview.enabling')
               ) : waNotEnabled ? (
-                "Not enabled"
+                t('overview.notEnabled')
               ) : (
-                "Offline"
+                t('overview.offline')
               )}
             </p>
           </div>
-          <p className="text-xs text-text-muted mb-4">WhatsApp Channel</p>
+          <p className="text-xs text-text-muted mb-4">{t('overview.whatsappChannel')}</p>
           <Button
             variant="ghost"
             size="sm"
             className="-ml-2.5"
             onClick={() => setActiveView("whatsapp")}
           >
-            Manage channel &rarr;
+            {t('overview.manageChannel')} {'\u2192'}
           </Button>
         </div>
 
@@ -162,7 +164,7 @@ export function OverviewPage() {
               {docsLoading && docs.length === 0 ? (
                 <Skeleton className="h-5 w-16" />
               ) : (
-                <Badge variant="info">{animatedIndexed} indexed</Badge>
+                <Badge variant="info">{t('overview.indexed', { count: animatedIndexed })}</Badge>
               )}
             </div>
             <div className="mb-1">
@@ -175,10 +177,10 @@ export function OverviewPage() {
               )}
             </div>
             <p className="text-xs text-text-muted mb-4">
-              Documents
+              {t('overview.documents')}
               {processingCount > 0 && (
                 <span className="text-yellow ml-1">
-                  &middot; {processingCount} processing
+                  &middot; {t('overview.processing', { count: processingCount })}
                 </span>
               )}
             </p>
@@ -188,7 +190,7 @@ export function OverviewPage() {
               className="-ml-2.5"
               onClick={() => setActiveView("knowledge-list")}
             >
-              View documents &rarr;
+              {t('overview.viewDocuments')} {'\u2192'}
             </Button>
           </div>
         )}
@@ -217,7 +219,7 @@ export function OverviewPage() {
             </p>
           </div>
           <p className="text-xs text-text-muted font-mono mb-4">
-            {orgName ? user?.orgId : "Organization"}
+            {orgName ? user?.orgId : t('overview.organization')}
           </p>
         </div>
 
@@ -240,7 +242,7 @@ export function OverviewPage() {
                 <Skeleton className="h-5 w-24" />
               ) : (
                 <Badge variant={activeCatalog ? "success" : "default"}>
-                  {activeCatalog?.name ?? "No active"}
+                  {activeCatalog?.name ?? t('overview.noActive')}
                 </Badge>
               )}
             </div>
@@ -253,14 +255,14 @@ export function OverviewPage() {
                 </p>
               )}
             </div>
-            <p className="text-xs text-text-muted mb-4">Catalogs</p>
+            <p className="text-xs text-text-muted mb-4">{t('overview.catalogs')}</p>
             <Button
               variant="ghost"
               size="sm"
               className="-ml-2.5"
               onClick={() => setActiveView("catalogs")}
             >
-              View catalog &rarr;
+              {t('overview.viewCatalog')} {'\u2192'}
             </Button>
           </div>
         )}
@@ -269,7 +271,7 @@ export function OverviewPage() {
       {/* Quick Actions */}
       <div className="animate-fade-in-up stagger-5">
         <h2 className="text-sm font-semibold text-text-bright mb-3">
-          Quick Actions
+          {t('overview.quickActions')}
         </h2>
         <div className="flex flex-wrap gap-3">
           {can("manage_knowledge") && (
@@ -278,7 +280,7 @@ export function OverviewPage() {
               icon={<UploadIcon size={16} />}
               onClick={() => setActiveView("knowledge-upload")}
             >
-              Upload content
+              {t('overview.uploadContent')}
             </Button>
           )}
           <Button
@@ -286,7 +288,7 @@ export function OverviewPage() {
             icon={<MessageCircleIcon size={16} />}
             onClick={() => setActiveView("whatsapp")}
           >
-            WhatsApp settings
+            {t('overview.whatsappSettings')}
           </Button>
         </div>
       </div>

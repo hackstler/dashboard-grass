@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../context/AppContext";
 import { usePermissions } from "../../hooks/usePermissions";
 import { useOrganizations } from "../../hooks/useOrganizations";
@@ -68,22 +69,23 @@ function OrgCreateModal({
   onCreate,
   onClose,
 }: OrgCreateModalProps) {
+  const { t } = useTranslation();
   const set = (field: keyof CreateFormState, value: string) =>
     onFormChange((f) => ({ ...f, [field]: value }));
 
   return (
-    <Modal open={open} onClose={onClose} title="Create Organization">
+    <Modal open={open} onClose={onClose} title={t('organizations.createOrganization')}>
       <div className="space-y-4">
         <Input
-          label="Organization ID"
-          placeholder="my-company"
+          label={t('organizations.orgId')}
+          placeholder={t('organizations.orgIdPlaceholder')}
           value={form.orgId}
           onChange={(e) => set("orgId", e.target.value)}
         />
         <Input
-          label="Admin Email"
+          label={t('organizations.adminEmail')}
           type="email"
-          placeholder="admin@my-company.com"
+          placeholder={t('organizations.adminEmailPlaceholder')}
           value={form.adminEmail}
           onChange={(e) => set("adminEmail", e.target.value)}
         />
@@ -91,17 +93,17 @@ function OrgCreateModal({
         {/* Company details -- glass sub-surface */}
         <div className="bg-surface-hi/60 backdrop-blur-sm border border-border rounded-[var(--radius-lg)] p-4 space-y-3">
           <p className="text-xs font-medium text-text-dim tracking-wide uppercase">
-            Company details
+            {t('organizations.companyDetails')}
           </p>
           <Input
-            label="Company Name"
-            placeholder="Acme Corp"
+            label={t('organizations.companyName')}
+            placeholder={t('organizations.companyNamePlaceholder')}
             value={form.name}
             onChange={(e) => set("name", e.target.value)}
           />
           <Input
-            label="Slug"
-            placeholder="acme-corp"
+            label={t('organizations.slug')}
+            placeholder={t('organizations.slugPlaceholder')}
             value={form.slug}
             onChange={(e) =>
               set(
@@ -112,43 +114,43 @@ function OrgCreateModal({
           />
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="NIF / Tax ID"
-              placeholder="B12345678"
+              label={t('organizations.nif')}
+              placeholder={t('organizations.nifPlaceholder')}
               value={form.nif}
               onChange={(e) => set("nif", e.target.value)}
             />
             <Input
-              label="Email"
+              label={t('common.email')}
               type="email"
-              placeholder="info@acme.com"
+              placeholder={t('organizations.emailPlaceholder')}
               value={form.email}
               onChange={(e) => set("email", e.target.value)}
             />
           </div>
           <Input
-            label="Phone"
+            label={t('organizations.phone')}
             type="tel"
-            placeholder="+34 600 000 000"
+            placeholder={t('organizations.phonePlaceholder')}
             value={form.phone}
             onChange={(e) => set("phone", e.target.value)}
           />
           <Input
-            label="Address"
-            placeholder="123 Main St, City"
+            label={t('organizations.address')}
+            placeholder={t('organizations.addressPlaceholder')}
             value={form.address}
             onChange={(e) => set("address", e.target.value)}
           />
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="VAT Rate (%)"
+              label={t('organizations.vatRate')}
               type="number"
-              placeholder="21"
+              placeholder={t('organizations.vatRatePlaceholder')}
               value={form.vatRate}
               onChange={(e) => set("vatRate", e.target.value)}
             />
             <Input
-              label="Currency"
-              placeholder="\u20ac"
+              label={t('organizations.currency')}
+              placeholder={t('organizations.currencyPlaceholder')}
               value={form.currency}
               onChange={(e) => set("currency", e.target.value)}
             />
@@ -157,7 +159,7 @@ function OrgCreateModal({
 
         <div className="flex justify-end gap-3 pt-2">
           <Button variant="secondary" size="sm" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -166,7 +168,7 @@ function OrgCreateModal({
             loading={creating}
             disabled={!form.orgId || !form.adminEmail}
           >
-            Create
+            {t('common.create')}
           </Button>
         </div>
       </div>
@@ -189,32 +191,30 @@ function OrgDeleteModal({
   onDelete,
   onClose,
 }: OrgDeleteModalProps) {
+  const { t } = useTranslation();
   return (
     <Modal
       open={target !== null}
       onClose={onClose}
-      title="Delete Organization"
+      title={t('organizations.deleteOrganization')}
     >
       <div className="space-y-4">
         <div className="flex items-start gap-3 p-3 bg-red-muted/50 border border-red/20 rounded-[var(--radius-md)]">
           <AlertCircleIcon size={18} className="text-red shrink-0 mt-0.5" />
-          <p className="text-sm text-red">
-            This action is irreversible. All users, documents, topics, and
-            WhatsApp sessions belonging to{" "}
-            <span className="font-mono font-semibold">{target?.orgId}</span>{" "}
-            will be permanently deleted.
-          </p>
+          <p className="text-sm text-red"
+            dangerouslySetInnerHTML={{
+              __html: t('organizations.deleteOrgWarning', { orgId: target?.orgId }),
+            }}
+          />
         </div>
-        <p className="text-sm text-text-muted">
-          Are you sure you want to delete organization{" "}
-          <span className="text-text-bright font-medium font-mono">
-            {target?.orgId}
-          </span>
-          ?
-        </p>
+        <p className="text-sm text-text-muted"
+          dangerouslySetInnerHTML={{
+            __html: t('organizations.deleteOrgConfirm', { orgId: target?.orgId }),
+          }}
+        />
         <div className="flex justify-end gap-3">
           <Button variant="secondary" size="sm" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             variant="danger"
@@ -222,7 +222,7 @@ function OrgDeleteModal({
             onClick={onDelete}
             loading={deleting}
           >
-            Delete Organization
+            {t('organizations.deleteOrganization')}
           </Button>
         </div>
       </div>
@@ -233,6 +233,7 @@ function OrgDeleteModal({
 // ── Main Organizations Page ──────────────────────────────────────────────────
 
 export function OrganizationsPage() {
+  const { t } = useTranslation();
   const { user, addToast } = useApp();
   const { can } = usePermissions();
   const {
@@ -271,12 +272,12 @@ export function OrganizationsPage() {
         }),
         ...(createForm.currency && { currency: createForm.currency }),
       });
-      addToast("Organization created", "success");
+      addToast(t('organizations.orgCreated'), "success");
       setShowCreate(false);
       setCreateForm(EMPTY_CREATE_FORM);
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to create organization",
+        err instanceof Error ? err.message : t('organizations.createFailed'),
         "error"
       );
     } finally {
@@ -289,11 +290,11 @@ export function OrganizationsPage() {
     setDeleting(true);
     try {
       await deleteOrganization(deleteTarget.orgId);
-      addToast("Organization deleted", "success");
+      addToast(t('organizations.orgDeleted'), "success");
       setDeleteTarget(null);
     } catch (err) {
       addToast(
-        err instanceof Error ? err.message : "Failed to delete organization",
+        err instanceof Error ? err.message : t('organizations.deleteFailed'),
         "error"
       );
     } finally {
@@ -324,10 +325,10 @@ export function OrganizationsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 animate-fade-in-up">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-            Organizations
+            {t('organizations.title')}
           </h1>
           <p className="text-sm text-text-muted mt-2">
-            Manage tenant organizations.
+            {t('organizations.subtitle')}
           </p>
         </div>
         {can("create_org") && (
@@ -337,7 +338,7 @@ export function OrganizationsPage() {
             icon={<PlusIcon size={16} />}
             onClick={() => setShowCreate(true)}
           >
-            Create Organization
+            {t('organizations.createOrganization')}
           </Button>
         )}
       </div>
@@ -368,8 +369,8 @@ export function OrganizationsPage() {
         <Card>
           <EmptyState
             icon={<BuildingIcon size={40} />}
-            title="No organizations found"
-            description="Create your first organization to get started."
+            title={t('organizations.noOrganizations')}
+            description={t('organizations.noOrgsDescription')}
             action={
               <Button
                 variant="primary"
@@ -377,7 +378,7 @@ export function OrganizationsPage() {
                 icon={<PlusIcon size={16} />}
                 onClick={() => setShowCreate(true)}
               >
-                Create Organization
+                {t('organizations.createOrganization')}
               </Button>
             }
           />
@@ -400,7 +401,7 @@ export function OrganizationsPage() {
                 >
                   {org.name || org.orgId}
                   {isOwnOrg(org) && (
-                    <span className="text-xs text-text-dim ml-2">(yours)</span>
+                    <span className="text-xs text-text-dim ml-2">{t('common.yours')}</span>
                   )}
                 </button>
                 <div className="flex flex-wrap items-center gap-2 mt-0.5">
@@ -442,7 +443,7 @@ export function OrganizationsPage() {
                     onClick={() => {
                       if (isOwnOrg(org)) {
                         addToast(
-                          "Cannot delete your own organization",
+                          t('organizations.cannotDeleteOwn'),
                           "error"
                         );
                         return;
@@ -456,8 +457,8 @@ export function OrganizationsPage() {
                     }`}
                     title={
                       isOwnOrg(org)
-                        ? "Cannot delete your own organization"
-                        : "Delete"
+                        ? t('organizations.cannotDeleteOwn')
+                        : t('common.delete')
                     }
                     disabled={isOwnOrg(org)}
                   >

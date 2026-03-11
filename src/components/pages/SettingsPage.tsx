@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../context/AppContext";
 import { useGoogleConnection } from "../../hooks/useGoogleConnection";
 import {
@@ -15,6 +16,7 @@ import { EmptyState } from "../ui/EmptyState";
 import { SettingsIcon } from "../ui/Icons";
 
 export function SettingsPage() {
+  const { t, i18n } = useTranslation();
   const { addToast } = useApp();
   const { status, loading, connect, disconnect, refetch } = useGoogleConnection();
   const [disconnecting, setDisconnecting] = useState(false);
@@ -24,11 +26,11 @@ export function SettingsPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("googleConnected") === "true") {
-      addToast("Google account connected successfully", "success");
+      addToast(t('settings.googleConnectedSuccess'), "success");
       refetch();
       window.history.replaceState({}, "", window.location.pathname);
     } else if (params.get("googleError")) {
-      addToast(`Google connection failed: ${params.get("googleError")}`, "error");
+      addToast(t('settings.googleConnectionFailed', { error: params.get("googleError") }), "error");
       window.history.replaceState({}, "", window.location.pathname);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,7 +41,7 @@ export function SettingsPage() {
     try {
       await connect();
     } catch {
-      addToast("Failed to start Google connection", "error");
+      addToast(t('settings.connectFailed'), "error");
       setConnecting(false);
     }
   };
@@ -48,9 +50,9 @@ export function SettingsPage() {
     setDisconnecting(true);
     try {
       await disconnect();
-      addToast("Google account disconnected", "success");
+      addToast(t('settings.googleDisconnected'), "success");
     } catch {
-      addToast("Failed to disconnect Google account", "error");
+      addToast(t('settings.disconnectFailed'), "error");
     } finally {
       setDisconnecting(false);
     }
@@ -60,10 +62,10 @@ export function SettingsPage() {
     <div>
       <div className="mb-8 animate-fade-in-up">
         <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-          Settings
+          {t('settings.title')}
         </h1>
         <p className="text-sm text-text-muted mt-2">
-          Manage your account integrations and preferences.
+          {t('settings.subtitle')}
         </p>
       </div>
 
@@ -74,7 +76,7 @@ export function SettingsPage() {
               <div className="w-7 h-7 rounded-[var(--radius-md)] bg-accent-dim flex items-center justify-center">
                 <GoogleIcon size={14} />
               </div>
-              <CardTitle>Google Account</CardTitle>
+              <CardTitle>{t('settings.googleAccount')}</CardTitle>
             </div>
             {loading && !status ? (
               <Skeleton className="h-5 w-24" />
@@ -84,13 +86,12 @@ export function SettingsPage() {
                 dot
                 pulse={status?.connected}
               >
-                {status?.connected ? "Connected" : "Not connected"}
+                {status?.connected ? t('common.connected') : t('settings.notConnected')}
               </Badge>
             )}
           </div>
           <CardDescription>
-            Connect your Google account to use Gmail and Calendar features
-            through the agent.
+            {t('settings.connectDescription')}
           </CardDescription>
         </CardHeader>
 
@@ -109,10 +110,10 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-text-bright">
-                    Google Account Connected
+                    {t('settings.googleConnected')}
                   </p>
                   <p className="text-xs text-text-muted">
-                    Gmail and Calendar access enabled
+                    {t('settings.gmailCalendarEnabled')}
                   </p>
                 </div>
               </div>
@@ -122,25 +123,42 @@ export function SettingsPage() {
                 onClick={handleDisconnect}
                 loading={disconnecting}
               >
-                Disconnect
+                {t('common.disconnect')}
               </Button>
             </div>
           ) : (
             <div className="space-y-4 animate-fade-in">
               <EmptyState
                 icon={<SettingsIcon size={40} />}
-                title="Google not connected"
-                description="Connect your Google account to enable Gmail and Calendar features. The agent will be able to read your emails and manage your calendar."
+                title={t('settings.googleNotConnected')}
+                description={t('settings.connectGoogleDescription')}
               />
               <Button
                 variant="primary"
                 onClick={handleConnect}
                 loading={connecting}
               >
-                Connect Google Account
+                {t('settings.connectGoogle')}
               </Button>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      <Card className="max-w-lg gradient-border animate-fade-in-up stagger-2">
+        <CardHeader>
+          <CardTitle>{t('settings.language')}</CardTitle>
+          <CardDescription>{t('settings.languageDescription')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <select
+            value={i18n.language.startsWith('es') ? 'es' : 'en'}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            className="w-full sm:w-48 bg-surface border border-border text-text text-sm px-3 py-2 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer"
+          >
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
         </CardContent>
       </Card>
     </div>

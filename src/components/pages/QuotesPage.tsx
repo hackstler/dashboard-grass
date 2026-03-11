@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../context/AppContext";
 import { useQuotes } from "../../hooks/useQuotes";
 import { downloadQuotePdf } from "../../api/quotes";
@@ -27,6 +28,7 @@ function triggerDownload(base64: string, filename: string) {
 }
 
 export function QuotesPage() {
+  const { t } = useTranslation();
   const { addToast } = useApp();
   const { quotes, loading, error } = useQuotes();
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -37,7 +39,7 @@ export function QuotesPage() {
       const { pdfBase64, filename } = await downloadQuotePdf(id);
       triggerDownload(pdfBase64, filename);
     } catch {
-      addToast("Failed to download PDF", "error");
+      addToast(t('quotes.downloadFailed'), "error");
     } finally {
       setDownloadingId(null);
     }
@@ -48,10 +50,10 @@ export function QuotesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 animate-fade-in-up">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-            Quotes
+            {t('quotes.title')}
           </h1>
           <p className="text-sm text-text-muted mt-2">
-            Manage your generated quotes.
+            {t('quotes.subtitle')}
           </p>
         </div>
       </div>
@@ -82,8 +84,8 @@ export function QuotesPage() {
         <Card>
           <EmptyState
             icon={<FileTextIcon size={40} />}
-            title="No quotes yet"
-            description="Quotes will appear here once they are generated."
+            title={t('quotes.noQuotes')}
+            description={t('quotes.noQuotesDescription')}
           />
         </Card>
       ) : (
