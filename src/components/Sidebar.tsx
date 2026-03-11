@@ -33,7 +33,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, activeView, setActiveView } = useApp();
   const { can } = usePermissions();
 
@@ -133,6 +133,16 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
           )}
         </nav>
 
+        <div className="border-t border-border px-3 py-2">
+          <select
+            value={i18n.language.startsWith('es') ? 'es' : 'en'}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            className="w-full bg-surface border border-border text-text-muted text-xs px-2 py-1.5 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer"
+          >
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
         <div className="border-t border-border px-4 py-3 flex items-center gap-3">
           <button
             onClick={() => handleNav("profile")}

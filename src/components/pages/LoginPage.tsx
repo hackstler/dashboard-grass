@@ -10,7 +10,7 @@ interface LoginPageProps {
 }
 
 export function LoginPage({ onLogin }: LoginPageProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const adapter = useAuthAdapter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -133,6 +133,17 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             </div>
           </CardContent>
         </Card>
+
+        <div className="flex justify-center mt-6">
+          <select
+            value={i18n.language.startsWith('es') ? 'es' : 'en'}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            className="bg-surface/50 border border-border/50 text-text-muted text-xs px-3 py-1.5 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer backdrop-blur-sm"
+          >
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
       </div>
     </div>
   );
