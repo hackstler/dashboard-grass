@@ -86,6 +86,7 @@ export function getPermissionSet(role: Role): Set<Permission> {
  * Views not listed here are accessible to all authenticated users.
  */
 export const VIEW_PERMISSIONS: Record<string, Permission> = {
+  chat: "use_chat",
   "knowledge-upload": "manage_knowledge",
   "knowledge-list": "view_knowledge",
   users: "view_org_users",

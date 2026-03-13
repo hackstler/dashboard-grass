@@ -19,6 +19,7 @@ import { MyOrganizationPage } from "./components/pages/MyOrganizationPage";
 import { CatalogPage } from "./components/pages/CatalogPage";
 import { WhatsAppConnectionsPage } from "./components/pages/WhatsAppConnectionsPage";
 import { QuotesPage } from "./components/pages/QuotesPage";
+import { ChatPage } from "./components/pages/ChatPage";
 import { Skeleton } from "./components/ui/Skeleton";
 import type { ActiveView } from "./types";
 import type { ReactNode } from "react";
@@ -30,6 +31,7 @@ import type { ReactNode } from "react";
  */
 const VIEW_COMPONENTS: Record<ActiveView, ReactNode> = {
   overview: <OverviewPage />,
+  chat: <ChatPage />,
   whatsapp: <WhatsAppPage />,
   "knowledge-upload": <KnowledgeUploadPage />,
   "knowledge-list": <KnowledgeListPage />,

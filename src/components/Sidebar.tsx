@@ -6,6 +6,7 @@ import type { ActiveView } from "../types";
 import type { Permission } from "../permissions";
 import {
   HomeIcon,
+  ChatIcon,
   MessageCircleIcon,
   UploadIcon,
   DatabaseIcon,
@@ -43,6 +44,7 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
    */
   const allNavItems: NavItem[] = [
     { id: "overview", labelKey: "nav.overview", icon: <HomeIcon size={18} />, section: "main" },
+    { id: "chat", labelKey: "nav.chat", icon: <ChatIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["chat"], section: "main" },
     { id: "whatsapp", labelKey: "nav.channels", icon: <MessageCircleIcon size={18} />, section: "main" },
     { id: "knowledge-upload", labelKey: "nav.upload", icon: <UploadIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["knowledge-upload"], section: "main" },
     { id: "knowledge-list", labelKey: "nav.knowledgeBase", icon: <DatabaseIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["knowledge-list"], section: "main" },

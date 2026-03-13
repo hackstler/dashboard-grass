@@ -44,7 +44,8 @@
     "users": "Usuarios",
     "catalog": "Catálogo",
     "organizations": "Organizaciones",
-    "whatsappMgmt": "WhatsApp Admin"
+    "whatsappMgmt": "WhatsApp Admin",
+    "chat": "Chat"
   },
   "login": {
     "signIn": "Inicia sesión en tu cuenta",
@@ -407,6 +408,16 @@
     "subtitle": "Datos de tu organización.",
     "noOrgInfo": "No hay información de la organización disponible.",
     "loadFailed": "Error al cargar la organización"
+  },
+  "chat": {
+    "title": "Chat",
+    "emptyState": "Pregunta lo que quieras sobre tu base de conocimiento. El agente buscará en tus documentos para responder.",
+    "placeholder": "Escribe tu mensaje...",
+    "newChat": "Nuevo chat",
+    "untitled": "Sin título",
+    "noConversations": "Sin conversaciones aún",
+    "sources": "fuentes consultadas",
+    "sendFailed": "Error al enviar mensaje"
   },
   "whatsappConnections": {
     "title": "Conexiones WhatsApp",

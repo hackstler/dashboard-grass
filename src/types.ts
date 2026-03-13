@@ -33,6 +33,7 @@ export type AuthState =
 
 export type ActiveView =
   | "overview"
+  | "chat"
   | "whatsapp"
   | "knowledge-upload"
   | "knowledge-list"
@@ -44,6 +45,40 @@ export type ActiveView =
   | "my-organization"
   | "profile"
   | "quotes";
+
+// ── Chat ────────────────────────────────────────────────────────────────────
+
+export interface ChatConversation {
+  id: string;
+  title: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant" | "system";
+  content: string;
+  metadata: {
+    model?: string;
+    retrievedChunks?: string[];
+  } | null;
+  createdAt: string;
+}
+
+export interface ChatSource {
+  id: string;
+  documentTitle: string;
+  documentSource: string;
+  score: number;
+  excerpt: string;
+}
+
+export type ChatStreamEvent =
+  | { type: "sources"; chunks: ChatSource[] }
+  | { type: "text"; text: string }
+  | { type: "done" }
+  | { type: "error"; message: string };
 
 // ── Admin ───────────────────────────────────────────────────────────────────
 
