@@ -39,35 +39,41 @@ export function ChatInput({ onSend, disabled, streaming, onStop }: ChatInputProp
   };
 
   return (
-    <div className="border-t border-border px-4 py-3">
-      <div className="flex items-end gap-2 bg-surface border border-border rounded-xl px-3 py-2 focus-within:border-accent/40 transition-colors">
-        <textarea
-          ref={textareaRef}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onInput={handleInput}
-          placeholder={t("chat.placeholder")}
-          rows={1}
-          className="flex-1 bg-transparent text-sm text-text-bright placeholder:text-text-dim resize-none outline-none max-h-40 leading-relaxed"
-          disabled={disabled}
-        />
-        {streaming ? (
-          <button
-            onClick={onStop}
-            className="btn-press shrink-0 p-2 rounded-lg bg-red/10 text-red hover:bg-red/20 transition-colors cursor-pointer"
-          >
-            <XIcon size={16} />
-          </button>
-        ) : (
-          <button
-            onClick={handleSubmit}
-            disabled={!value.trim() || disabled}
-            className="btn-press shrink-0 p-2 rounded-lg bg-accent text-white hover:bg-accent-hover disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
-          >
-            <SendIcon size={16} />
-          </button>
-        )}
+    <div className="px-4 py-4 bg-gradient-to-t from-bg via-bg to-transparent">
+      <div className="max-w-3xl mx-auto">
+        <div className="flex items-end gap-2 glass border border-border-hi/60 rounded-2xl px-4 py-3 shadow-[var(--shadow-card)] focus-within:border-accent/30 focus-within:shadow-[0_0_24px_rgba(59,130,246,0.08)] transition-all duration-300">
+          <textarea
+            ref={textareaRef}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onInput={handleInput}
+            placeholder={t("chat.placeholder")}
+            rows={1}
+            className="flex-1 bg-transparent text-sm text-text-bright placeholder:text-text-dim resize-none outline-none max-h-40 leading-relaxed"
+            disabled={disabled}
+          />
+          {streaming ? (
+            <button
+              onClick={onStop}
+              className="btn-press shrink-0 p-2.5 rounded-xl bg-red/10 text-red hover:bg-red/20 border border-red/15 transition-all duration-200 cursor-pointer hover:shadow-[0_0_16px_rgba(239,68,68,0.15)]"
+              title={t("common.cancel")}
+            >
+              <XIcon size={16} />
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              disabled={!value.trim() || disabled}
+              className="btn-press shrink-0 p-2.5 rounded-xl bg-gradient-to-r from-accent to-accent-hover text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer hover:shadow-[var(--shadow-glow-accent)] disabled:hover:shadow-none"
+            >
+              <SendIcon size={16} />
+            </button>
+          )}
+        </div>
+        <p className="text-[10px] text-text-dim text-center mt-2 font-mono">
+          Enter ↵ {t("chat.sendHint")} · Shift+Enter {t("chat.newLineHint")}
+        </p>
       </div>
     </div>
   );

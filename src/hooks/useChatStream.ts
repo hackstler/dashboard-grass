@@ -7,6 +7,7 @@ export interface PendingMessage {
   role: "assistant";
   content: string;
   sources: ChatSource[];
+  activeTool: string | null;
 }
 
 interface SendResult {
@@ -20,6 +21,23 @@ interface UseChatStreamReturn {
   error: string | null;
   sendMessage: (query: string, conversationId?: string) => Promise<SendResult>;
   stopStreaming: () => void;
+}
+
+const TOOL_LABELS: Record<string, string> = {
+  searchDocuments: "searching",
+  delegateTo_rag: "searching",
+  delegateTo_quote: "generating_quote",
+  delegateTo_youtube: "searching_youtube",
+  delegateTo_gmail: "composing_email",
+  delegateTo_calendar: "checking_calendar",
+  "delegateTo_catalog-manager": "consulting_catalog",
+  calculateBudget: "generating_quote",
+  saveNote: "saving",
+  searchWeb: "searching_web",
+};
+
+export function resolveToolLabel(toolName: string): string {
+  return TOOL_LABELS[toolName] ?? "thinking";
 }
 
 export function useChatStream(): UseChatStreamReturn {
@@ -37,7 +55,7 @@ export function useChatStream(): UseChatStreamReturn {
 
     const pendingId = `pending-${Date.now()}`;
     contentRef.current = "";
-    setPending({ id: pendingId, role: "assistant", content: "", sources: [] });
+    setPending({ id: pendingId, role: "assistant", content: "", sources: [], activeTool: null });
     setStreaming(true);
     setError(null);
 
@@ -52,12 +70,15 @@ export function useChatStream(): UseChatStreamReturn {
         conversationId,
         (event: ChatStreamEvent) => {
           switch (event.type) {
+            case "tool-call":
+              setPending((p) => p ? { ...p, activeTool: event.toolName } : p);
+              break;
             case "sources":
-              setPending((p) => p ? { ...p, sources: event.chunks } : p);
+              setPending((p) => p ? { ...p, sources: event.chunks, activeTool: null } : p);
               break;
             case "text":
               contentRef.current += event.text;
-              setPending((p) => p ? { ...p, content: contentRef.current } : p);
+              setPending((p) => p ? { ...p, content: contentRef.current, activeTool: null } : p);
               break;
             case "error":
               setError(event.message);

@@ -75,6 +75,7 @@ export interface ChatSource {
 }
 
 export type ChatStreamEvent =
+  | { type: "tool-call"; toolName: string }
   | { type: "sources"; chunks: ChatSource[] }
   | { type: "text"; text: string }
   | { type: "done" }
