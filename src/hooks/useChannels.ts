@@ -20,7 +20,7 @@ interface UseChannelsReturn {
   disconnect: () => Promise<void>;
 }
 
-export function useChannels(pollingInterval = 3000): UseChannelsReturn {
+export function useChannels(pollingInterval = 15000): UseChannelsReturn {
   const {
     data: status,
     loading,

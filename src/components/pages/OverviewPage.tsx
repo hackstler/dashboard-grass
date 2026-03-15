@@ -34,10 +34,8 @@ export function OverviewPage() {
   const activeCatalog = catalogs.find((c) => c.isActive);
   const animatedCatalogCount = useAnimatedCounter(catalogs.length);
 
-  const { status: waStatus, loading: waLoading } = useChannels(5000);
-  const { documents: docs, loading: docsLoading } = useDocuments({
-    pollingInterval: 10000,
-  });
+  const { status: waStatus, loading: waLoading } = useChannels(0);
+  const { documents: docs, loading: docsLoading } = useDocuments({ pollingInterval: 0 });
 
   const totalDocs = docs.length;
   const indexedCount = docs.filter((d) => d.status === "indexed").length;

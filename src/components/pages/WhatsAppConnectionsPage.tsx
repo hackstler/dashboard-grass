@@ -47,7 +47,7 @@ export function WhatsAppConnectionsPage() {
 
   useEffect(() => {
     fetchConnections();
-    const interval = setInterval(fetchConnections, 10_000);
+    const interval = setInterval(fetchConnections, 30_000);
     return () => clearInterval(interval);
   }, [fetchConnections]);
 

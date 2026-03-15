@@ -16,7 +16,7 @@ interface UseGoogleConnectionReturn {
   disconnect: () => Promise<void>;
 }
 
-export function useGoogleConnection(pollingInterval = 10000): UseGoogleConnectionReturn {
+export function useGoogleConnection(pollingInterval = 30000): UseGoogleConnectionReturn {
   const {
     data: status,
     loading,

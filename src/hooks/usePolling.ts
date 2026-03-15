@@ -39,6 +39,11 @@ export function usePolling<T>(
 
     doFetch();
 
+    // intervalMs = 0 means fetch once, no polling
+    if (!intervalMs) {
+      return () => { mountedRef.current = false; };
+    }
+
     const id = setInterval(() => {
       if (!document.hidden) doFetch();
     }, intervalMs);
