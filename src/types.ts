@@ -55,6 +55,11 @@ export interface ChatConversation {
   updatedAt: string;
 }
 
+export interface ChatAttachment {
+  filename: string;
+  base64: string;
+}
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant" | "system";
@@ -63,6 +68,7 @@ export interface ChatMessage {
     model?: string;
     retrievedChunks?: string[];
   } | null;
+  attachments?: ChatAttachment[];
   createdAt: string;
 }
 
@@ -76,8 +82,14 @@ export interface ChatSource {
 
 export type ChatStreamEvent =
   | { type: "tool-call"; toolName: string }
+  | { type: "tool-error"; toolName: string; error: string }
+  | { type: "agent-start"; agentId: string }
+  | { type: "agent-end"; agentId: string }
+  | { type: "step-start" }
+  | { type: "step-finish"; finishReason: string }
   | { type: "sources"; chunks: ChatSource[] }
   | { type: "text"; text: string }
+  | { type: "attachment"; filename: string; base64: string }
   | { type: "done" }
   | { type: "error"; message: string };
 
@@ -127,6 +139,12 @@ export interface Organization {
   createdAt: string | null;
 }
 
+export interface QuoteSettings {
+  paymentTerms?: string;
+  quoteValidityDays?: number;
+  companyRegistration?: string;
+}
+
 export interface OrganizationDetail {
   id: string;
   orgId: string;
@@ -139,6 +157,7 @@ export interface OrganizationDetail {
   logo: string | null;
   vatRate: number | null;
   currency: string;
+  quoteSettings: QuoteSettings | null;
   metadata: Record<string, unknown> | null;
   createdAt: string;
   updatedAt: string;
@@ -168,6 +187,7 @@ export interface UpdateOrganizationData {
   logo?: string | null;
   vatRate?: number | null;
   currency?: string;
+  quoteSettings?: QuoteSettings | null;
 }
 
 // ── Channels ────────────────────────────────────────────────────────────────

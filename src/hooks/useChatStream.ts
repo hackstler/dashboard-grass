@@ -2,12 +2,20 @@ import { useState, useCallback, useRef } from "react";
 import { streamChat } from "../api/chat";
 import type { ChatMessage, ChatSource, ChatStreamEvent } from "../types";
 
+export interface PendingAttachment {
+  filename: string;
+  base64: string;
+}
+
 export interface PendingMessage {
   id: string;
   role: "assistant";
   content: string;
   sources: ChatSource[];
   activeTool: string | null;
+  /** Sub-agent currently executing (e.g. "agent-quote", "agent-rag") */
+  activeAgent: string | null;
+  attachments: PendingAttachment[];
 }
 
 interface SendResult {
@@ -21,23 +29,33 @@ interface UseChatStreamReturn {
   error: string | null;
   sendMessage: (query: string, conversationId?: string) => Promise<SendResult>;
   stopStreaming: () => void;
+  clearPending: () => void;
 }
 
+/** Maps tool names to semantic labels used by i18n (chat.tool_*) */
 const TOOL_LABELS: Record<string, string> = {
   searchDocuments: "searching",
-  delegateTo_rag: "searching",
-  delegateTo_quote: "generating_quote",
-  delegateTo_youtube: "searching_youtube",
-  delegateTo_gmail: "composing_email",
-  delegateTo_calendar: "checking_calendar",
-  "delegateTo_catalog-manager": "consulting_catalog",
   calculateBudget: "generating_quote",
   saveNote: "saving",
   searchWeb: "searching_web",
 };
 
+/** Maps sub-agent IDs to semantic labels used by i18n (chat.agent_*) */
+const AGENT_LABELS: Record<string, string> = {
+  "agent-rag": "searching",
+  "agent-quote": "generating_quote",
+  "agent-youtube": "searching_youtube",
+  "agent-gmail": "composing_email",
+  "agent-calendar": "checking_calendar",
+  "agent-catalog-manager": "consulting_catalog",
+};
+
 export function resolveToolLabel(toolName: string): string {
   return TOOL_LABELS[toolName] ?? "thinking";
+}
+
+export function resolveAgentLabel(agentId: string): string {
+  return AGENT_LABELS[agentId] ?? "thinking";
 }
 
 export function useChatStream(): UseChatStreamReturn {
@@ -46,6 +64,7 @@ export function useChatStream(): UseChatStreamReturn {
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const contentRef = useRef("");
+  const attachmentsRef = useRef<PendingAttachment[]>([]);
 
   const sendMessage = useCallback(async (
     query: string,
@@ -55,7 +74,8 @@ export function useChatStream(): UseChatStreamReturn {
 
     const pendingId = `pending-${Date.now()}`;
     contentRef.current = "";
-    setPending({ id: pendingId, role: "assistant", content: "", sources: [], activeTool: null });
+    attachmentsRef.current = [];
+    setPending({ id: pendingId, role: "assistant", content: "", sources: [], activeTool: null, activeAgent: null, attachments: [] });
     setStreaming(true);
     setError(null);
 
@@ -70,16 +90,49 @@ export function useChatStream(): UseChatStreamReturn {
         conversationId,
         (event: ChatStreamEvent) => {
           switch (event.type) {
+            // ── Tool lifecycle ──────────────────────────────
             case "tool-call":
-              setPending((p) => p ? { ...p, activeTool: event.toolName } : p);
+              // Mastra Supervisor Pattern emits tool-call with "agent-*" names for delegation
+              if (event.toolName.startsWith("agent-")) {
+                setPending((p) => p ? { ...p, activeAgent: event.toolName, activeTool: null } : p);
+              } else {
+                setPending((p) => p ? { ...p, activeTool: event.toolName } : p);
+              }
               break;
+            case "tool-error":
+              // Tool failed — clear the active indicator
+              setPending((p) => p ? { ...p, activeTool: null } : p);
+              break;
+
+            // ── Sub-agent delegation ────────────────────────
+            case "agent-start":
+              setPending((p) => p ? { ...p, activeAgent: event.agentId, activeTool: null } : p);
+              break;
+            case "agent-end":
+              setPending((p) => p ? { ...p, activeAgent: null } : p);
+              break;
+
+            // ── LLM steps (clear tool indicator on step change) ─
+            case "step-start":
+              break;
+            case "step-finish":
+              setPending((p) => p ? { ...p, activeTool: null, activeAgent: null } : p);
+              break;
+
+            // ── Content ─────────────────────────────────────
             case "sources":
               setPending((p) => p ? { ...p, sources: event.chunks, activeTool: null } : p);
               break;
             case "text":
               contentRef.current += event.text;
-              setPending((p) => p ? { ...p, content: contentRef.current, activeTool: null } : p);
+              setPending((p) => p ? { ...p, content: contentRef.current, activeTool: null, activeAgent: null } : p);
               break;
+            case "attachment":
+              attachmentsRef.current = [...attachmentsRef.current, { filename: event.filename, base64: event.base64 }];
+              setPending((p) => p ? { ...p, attachments: attachmentsRef.current } : p);
+              break;
+
+            // ── Terminal ─────────────────────────────────────
             case "error":
               setError(event.message);
               break;
@@ -99,11 +152,15 @@ export function useChatStream(): UseChatStreamReturn {
     } finally {
       setStreaming(false);
       abortRef.current = null;
-      setPending(null);
+      // Don't clear pending here — useChat will clear it after adding to messages
+      // to avoid the flash where the message disappears and reappears.
     }
 
     const finalContent = contentRef.current;
-    if (!finalContent) return { assistantMessage: null, conversationId: resolvedConvId };
+    if (!finalContent) {
+      setPending(null);
+      return { assistantMessage: null, conversationId: resolvedConvId };
+    }
 
     return {
       assistantMessage: {
@@ -111,6 +168,7 @@ export function useChatStream(): UseChatStreamReturn {
         role: "assistant",
         content: finalContent,
         metadata: null,
+        attachments: attachmentsRef.current.length > 0 ? attachmentsRef.current : undefined,
         createdAt: new Date().toISOString(),
       },
       conversationId: resolvedConvId,
@@ -121,5 +179,9 @@ export function useChatStream(): UseChatStreamReturn {
     abortRef.current?.abort();
   }, []);
 
-  return { pending, streaming, error, sendMessage, stopStreaming };
+  const clearPending = useCallback(() => {
+    setPending(null);
+  }, []);
+
+  return { pending, streaming, error, sendMessage, stopStreaming, clearPending };
 }

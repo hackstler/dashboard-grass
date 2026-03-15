@@ -46,6 +46,11 @@ export function OrgEditPage({
   const [currency, setCurrency] = useState("\u20ac");
   const [logo, setLogo] = useState<string | null>(null);
 
+  // Quote settings
+  const [paymentTerms, setPaymentTerms] = useState("");
+  const [quoteValidityDays, setQuoteValidityDays] = useState("");
+  const [companyRegistration, setCompanyRegistration] = useState("");
+
   const loadOrg = useCallback(async () => {
     setLoading(true);
     try {
@@ -59,6 +64,10 @@ export function OrgEditPage({
       setVatRate(org.vatRate != null ? String(org.vatRate * 100) : "");
       setCurrency(org.currency ?? "\u20ac");
       setLogo(org.logo);
+      const qs = org.quoteSettings;
+      setPaymentTerms(qs?.paymentTerms ?? "");
+      setQuoteValidityDays(qs?.quoteValidityDays != null ? String(qs.quoteValidityDays) : "");
+      setCompanyRegistration(qs?.companyRegistration ?? "");
     } catch (err) {
       addToast(
         err instanceof Error ? err.message : t('myOrg.loadFailed'),
@@ -78,6 +87,11 @@ export function OrgEditPage({
     setSaving(true);
     try {
       const vatNum = vatRate ? parseFloat(vatRate) / 100 : null;
+      const qs: Record<string, unknown> = {};
+      if (paymentTerms) qs.paymentTerms = paymentTerms;
+      if (quoteValidityDays) qs.quoteValidityDays = parseInt(quoteValidityDays, 10);
+      if (companyRegistration) qs.companyRegistration = companyRegistration;
+
       await updateOrganization(orgId, {
         name: name || null,
         slug: slug || null,
@@ -88,6 +102,7 @@ export function OrgEditPage({
         vatRate: vatNum,
         currency: currency || "\u20ac",
         logo,
+        quoteSettings: Object.keys(qs).length > 0 ? qs : null,
       });
       addToast(t('orgEdit.orgUpdated'), "success");
     } catch (err) {
@@ -294,6 +309,44 @@ export function OrgEditPage({
               onChange={(e) => setCurrency(e.target.value)}
               disabled={!isOwnOrg}
             />
+          </div>
+        </div>
+
+        {/* Quote Settings */}
+        <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up stagger-3">
+          <h2 className="text-sm font-semibold text-text-bright mb-4">
+            {t('orgEdit.quoteSettings')}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label={t('orgEdit.quoteValidity')}
+              type="number"
+              placeholder="60"
+              value={quoteValidityDays}
+              onChange={(e) => setQuoteValidityDays(e.target.value)}
+              disabled={!isOwnOrg}
+            />
+            <div />
+            <div className="sm:col-span-2">
+              <Textarea
+                label={t('orgEdit.paymentTerms')}
+                placeholder={t('orgEdit.paymentTermsPlaceholder')}
+                value={paymentTerms}
+                onChange={(e) => setPaymentTerms(e.target.value)}
+                disabled={!isOwnOrg}
+                className="min-h-[80px]"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Textarea
+                label={t('orgEdit.companyRegistration')}
+                placeholder={t('orgEdit.companyRegistrationPlaceholder')}
+                value={companyRegistration}
+                onChange={(e) => setCompanyRegistration(e.target.value)}
+                disabled={!isOwnOrg}
+                className="min-h-[80px]"
+              />
+            </div>
           </div>
         </div>
 

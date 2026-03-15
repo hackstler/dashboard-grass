@@ -4,8 +4,8 @@ interface SkeletonProps {
 
 export function Skeleton({ className = "" }: SkeletonProps) {
   return (
-    <div
-      className={`bg-surface-hi rounded-[var(--radius-md)] animate-shimmer ${className}`}
+    <span
+      className={`block bg-surface-hi rounded-[var(--radius-md)] animate-shimmer ${className}`}
     />
   );
 }

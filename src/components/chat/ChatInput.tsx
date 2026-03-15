@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { SendIcon, XIcon } from "../ui/Icons";
 
@@ -38,6 +38,13 @@ export function ChatInput({ onSend, disabled, streaming, onStop }: ChatInputProp
     el.style.height = Math.min(el.scrollHeight, 160) + "px";
   };
 
+  // Restore focus when streaming ends
+  useEffect(() => {
+    if (!streaming && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [streaming]);
+
   return (
     <div className="px-4 py-4 bg-gradient-to-t from-bg via-bg to-transparent">
       <div className="max-w-3xl mx-auto">
@@ -51,7 +58,6 @@ export function ChatInput({ onSend, disabled, streaming, onStop }: ChatInputProp
             placeholder={t("chat.placeholder")}
             rows={1}
             className="flex-1 bg-transparent text-sm text-text-bright placeholder:text-text-dim resize-none outline-none max-h-40 leading-relaxed"
-            disabled={disabled}
           />
           {streaming ? (
             <button

@@ -7,7 +7,7 @@ import type { ChatMessage } from "../types";
 export function useChat() {
   const {
     conversations,
-    loading: conversationsLoading,
+    loading: _conversationsLoading,
     error: conversationsError,
     fetchConversations,
     removeConversation: deleteConversation,
@@ -19,6 +19,7 @@ export function useChat() {
     error: streamError,
     sendMessage: streamSend,
     stopStreaming,
+    clearPending,
   } = useChatStream();
 
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
@@ -71,12 +72,17 @@ export function useChat() {
       setActiveConversationId(result.conversationId);
     }
 
+    // Clear pending and add final message in the same tick — React batches
+    // these into a single render, so the StreamingBubble disappears exactly
+    // when the MessageBubble appears. No flash.
     if (result.assistantMessage) {
       setMessages((prev) => [...prev, result.assistantMessage!]);
     }
+    clearPending();
 
+    // Refresh sidebar in background
     fetchConversations();
-  }, [streaming, activeConversationId, streamSend, fetchConversations]);
+  }, [streaming, activeConversationId, streamSend, clearPending, fetchConversations]);
 
   return {
     conversations,
@@ -84,7 +90,7 @@ export function useChat() {
     messages,
     pending,
     streaming,
-    loading: loading || conversationsLoading,
+    loading,
     error,
     sendMessage,
     selectConversation,

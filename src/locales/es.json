@@ -401,7 +401,13 @@
     "onlyEditOwn": "Solo puedes editar tu propia organización.",
     "orgUpdated": "Organización actualizada",
     "updateFailed": "Error al actualizar",
-    "logoTooLarge": "El logo debe pesar menos de 1.5 MB"
+    "logoTooLarge": "El logo debe pesar menos de 1.5 MB",
+    "quoteSettings": "Configuración de presupuestos",
+    "quoteValidity": "Validez presupuesto (días)",
+    "paymentTerms": "Condiciones de pago",
+    "paymentTermsPlaceholder": "Ej: 50% a la aprobación y 50% a la finalización",
+    "companyRegistration": "Registro mercantil",
+    "companyRegistrationPlaceholder": "Ej: Empresa registrada en el Registro Mercantil de..."
   },
   "myOrg": {
     "title": "Mi Organización",
@@ -431,7 +437,14 @@
     "tool_consulting_catalog": "Consultando catálogo...",
     "tool_saving": "Guardando nota...",
     "tool_searching_web": "Buscando en la web...",
-    "tool_thinking": "Pensando..."
+    "tool_thinking": "Pensando...",
+    "agent_searching": "Buscando información...",
+    "agent_generating_quote": "Preparando presupuesto...",
+    "agent_searching_youtube": "Buscando en YouTube...",
+    "agent_composing_email": "Redactando email...",
+    "agent_checking_calendar": "Consultando calendario...",
+    "agent_consulting_catalog": "Consultando catálogo...",
+    "agent_thinking": "Pensando..."
   },
   "whatsappConnections": {
     "title": "Conexiones WhatsApp",
