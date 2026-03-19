@@ -41,7 +41,7 @@ export function ChatPage() {
   return (
     <div className="-mx-4 sm:-mx-6 -my-6 sm:-my-8 flex h-[calc(100vh-var(--header-h,0px))]">
       {/* Desktop sidebar */}
-      <div className="w-64 shrink-0 border-r border-border bg-bg/50 hidden md:block">
+      <div className="w-64 shrink-0 border-r border-border hidden md:block">
         <ConversationList
           conversations={conversations}
           activeId={activeConversationId}
@@ -73,7 +73,7 @@ export function ChatPage() {
       {/* Chat area */}
       <div className="flex-1 flex flex-col min-w-0 relative">
         {/* Mobile header bar */}
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border glass-subtle md:hidden">
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border md:hidden">
           <button
             onClick={() => setSidebarOpen(true)}
             className="btn-press p-2 rounded-xl hover:bg-surface-hover text-text-muted transition-colors cursor-pointer"
@@ -90,14 +90,14 @@ export function ChatPage() {
 
         {/* Messages area */}
         <div className="flex-1 overflow-y-auto relative">
-          {/* Top fade gradient */}
-          <div className="sticky top-0 h-6 bg-gradient-to-b from-bg to-transparent z-10 pointer-events-none" />
+          {/* Top spacer */}
+          <div className="h-4" />
 
-          {!hasMessages && !loading && <EmptyChatState />}
+          {!hasMessages && !loading && <EmptyChatState onSuggestionClick={sendMessage} />}
 
           {loading && (
             <div className="flex items-center justify-center h-full">
-              <div className="flex items-center gap-3 px-5 py-3 rounded-2xl glass border border-border">
+              <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-surface border border-border">
                 <div className="flex gap-1">
                   <span className="w-2 h-2 rounded-full bg-accent" style={{ animation: "pulse 1.2s ease-in-out infinite" }} />
                   <span className="w-2 h-2 rounded-full bg-accent" style={{ animation: "pulse 1.2s ease-in-out infinite", animationDelay: "200ms" }} />
@@ -107,7 +107,7 @@ export function ChatPage() {
             </div>
           )}
 
-          <div className="max-w-3xl mx-auto px-4 py-2 space-y-5">
+          <div className="max-w-4xl mx-auto px-4 py-2 space-y-5">
             {messages.map((msg) => (
               <MessageBubble key={msg.id} message={msg} />
             ))}
@@ -122,8 +122,8 @@ export function ChatPage() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Bottom fade gradient */}
-          <div className="sticky bottom-0 h-6 bg-gradient-to-t from-bg to-transparent pointer-events-none" />
+          {/* Bottom spacer */}
+          <div className="h-4" />
         </div>
 
         {/* Input */}

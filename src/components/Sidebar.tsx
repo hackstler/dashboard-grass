@@ -101,7 +101,7 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
         />
       )}
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-50 w-60 flex-shrink-0 glass border-r border-border flex flex-col transition-transform duration-300 ease-out md:translate-x-0 ${
+        className={`fixed md:static inset-y-0 left-0 z-50 w-60 flex-shrink-0 bg-surface border-r border-border flex flex-col transition-transform duration-300 ease-out md:translate-x-0 scanlines ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -111,11 +111,16 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
         <div className="px-5 py-5 border-b border-border">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-gradient-to-br from-accent to-brand rounded-[var(--radius-md)] flex items-center justify-center shadow-[var(--shadow-glow-accent)] transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(59,130,246,0.4)]">
-              <span className="text-white text-sm font-bold">A</span>
+              <span className="text-white text-sm font-bold font-mono">H</span>
             </div>
-            <span className="font-semibold text-sm gradient-text tracking-tight">
-              {t('nav.agentDashboard')}
-            </span>
+            <div className="flex flex-col">
+              <span className="font-bold text-sm text-text-bright tracking-tight font-mono glitch-hover">
+                hackstler
+              </span>
+              <span className="text-[10px] text-text-muted font-mono tracking-wider uppercase">
+                agent
+              </span>
+            </div>
           </div>
         </div>
 
@@ -123,13 +128,15 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
           {mainItems.map((item) => renderNavButton(item, ++stagger))}
           {adminItems.length > 0 && (
             <>
-              <div className="border-t border-border my-2" />
+              <div className="border-t border-border mt-3 mb-2" />
+              <p className="px-3 pt-1 pb-2 text-[11px] font-semibold tracking-[0.1em] text-text-muted uppercase font-mono">{t('nav.admin', 'Admin')}</p>
               {adminItems.map((item) => renderNavButton(item, ++stagger))}
             </>
           )}
           {superItems.length > 0 && (
             <>
-              <div className="border-t border-border my-2" />
+              <div className="border-t border-border mt-3 mb-2" />
+              <p className="px-3 pt-1 pb-2 text-[11px] font-semibold tracking-[0.1em] text-text-muted uppercase font-mono">{t('nav.platform', 'Platform')}</p>
               {superItems.map((item) => renderNavButton(item, ++stagger))}
             </>
           )}
@@ -145,7 +152,7 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
                 className={`btn-press flex-1 font-mono text-[11px] font-semibold tracking-wider py-1.5 rounded-[var(--radius-sm)] transition-all duration-300 cursor-pointer ${
                   active
                     ? "bg-accent-dim text-accent shadow-[var(--shadow-nav-active)] border border-accent/20"
-                    : "text-text-dim hover:text-text-muted hover:bg-surface-hover border border-transparent"
+                    : "text-text-muted hover:text-text hover:bg-surface-hover border border-transparent"
                 }`}
               >
                 {label}

@@ -401,17 +401,17 @@ export function OrganizationsPage() {
                 >
                   {org.name || org.orgId}
                   {isOwnOrg(org) && (
-                    <span className="text-xs text-text-dim ml-2">{t('common.yours')}</span>
+                    <span className="text-xs text-text-muted ml-2">{t('common.yours')}</span>
                   )}
                 </button>
                 <div className="flex flex-wrap items-center gap-2 mt-0.5">
-                  <span className="text-xs text-text-dim font-mono">
+                  <span className="text-xs text-text-muted font-mono">
                     {org.orgId}
                   </span>
                   {org.createdAt && (
                     <>
-                      <span className="text-text-dim">&middot;</span>
-                      <span className="text-xs text-text-dim">
+                      <span className="text-text-muted">&middot;</span>
+                      <span className="text-xs font-mono text-text-muted">
                         {formatDate(org.createdAt)}
                       </span>
                     </>
@@ -432,7 +432,7 @@ export function OrganizationsPage() {
                 {can("edit_own_org") && (
                   <button
                     onClick={() => setEditingOrgId(org.orgId)}
-                    className="btn-press transition-all cursor-pointer p-1.5 rounded-[var(--radius-sm)] text-text-dim hover:text-accent hover:bg-accent/10"
+                    className="btn-press transition-all cursor-pointer p-1.5 rounded-[var(--radius-sm)] text-text-muted hover:text-accent hover:bg-accent/10"
                     title="Edit"
                   >
                     <EditIcon size={16} />
@@ -452,8 +452,8 @@ export function OrganizationsPage() {
                     }}
                     className={`btn-press transition-all cursor-pointer p-1.5 rounded-[var(--radius-sm)] ${
                       isOwnOrg(org)
-                        ? "text-text-dim/30 cursor-not-allowed"
-                        : "text-text-dim hover:text-red hover:bg-red-muted"
+                        ? "text-text-muted/30 cursor-not-allowed"
+                        : "text-text-muted hover:text-red hover:bg-red-muted"
                     }`}
                     title={
                       isOwnOrg(org)

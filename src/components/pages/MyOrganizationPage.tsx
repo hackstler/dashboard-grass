@@ -173,7 +173,7 @@ function InfoField({
   const { t } = useTranslation();
   return (
     <div>
-      <p className="text-xs font-medium text-text-dim mb-1">{label}</p>
+      <p className="text-xs font-medium text-text-muted mb-1">{label}</p>
       <p
         className={`text-sm text-text-bright ${mono ? "font-mono" : ""} ${!value ? "text-text-dim italic" : ""}`}
       >

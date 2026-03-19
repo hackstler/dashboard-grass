@@ -33,7 +33,7 @@ export function Textarea({
         id={textareaId}
         value={value}
         maxLength={maxLength}
-        className={`w-full bg-surface border border-border text-text text-sm px-3 py-2 rounded-[var(--radius-md)] outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20 transition-colors placeholder:text-text-dim resize-y min-h-[100px] ${
+        className={`neon-input w-full bg-surface border border-border text-text text-sm px-3 py-2.5 rounded-[var(--radius-md)] outline-none placeholder:text-text-dim resize-y min-h-[100px] ${
           error ? "border-red/50" : ""
         } ${className}`}
         {...props}

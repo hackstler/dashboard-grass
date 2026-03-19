@@ -105,6 +105,7 @@ export function OrgEditPage({
         quoteSettings: Object.keys(qs).length > 0 ? qs : null,
       });
       addToast(t('orgEdit.orgUpdated'), "success");
+      onBack();
     } catch (err) {
       addToast(
         err instanceof Error ? err.message : t('orgEdit.updateFailed'),

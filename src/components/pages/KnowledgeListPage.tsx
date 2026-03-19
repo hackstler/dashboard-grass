@@ -189,25 +189,25 @@ export function KnowledgeListPage() {
                     {doc.title}
                   </p>
                   <div className="flex flex-wrap items-center gap-2 mt-0.5">
-                    <span className="text-xs text-text-dim">
+                    <span className="text-xs text-text-muted font-mono">
                       {typeLabels[doc.contentType]}
                     </span>
-                    <span className="text-text-dim">&middot;</span>
-                    <span className="text-xs text-text-dim">
+                    <span className="text-text-muted">&middot;</span>
+                    <span className="text-xs text-text-muted font-mono">
                       {formatDate(doc.createdAt)}
                     </span>
                     {doc.chunkCount != null && doc.chunkCount > 0 && (
                       <>
-                        <span className="text-text-dim">&middot;</span>
-                        <span className="text-xs text-text-dim">
+                        <span className="text-text-muted">&middot;</span>
+                        <span className="text-xs font-mono text-text-muted">
                           {t('knowledge.chunks', { count: doc.chunkCount })}
                         </span>
                       </>
                     )}
                     {isAdmin && doc.orgId && (
                       <>
-                        <span className="text-text-dim">&middot;</span>
-                        <span className="text-xs text-text-dim font-mono">
+                        <span className="text-text-muted">&middot;</span>
+                        <span className="text-xs text-text-muted font-mono">
                           {doc.orgId}
                         </span>
                       </>
@@ -219,7 +219,7 @@ export function KnowledgeListPage() {
                 </Badge>
                 <button
                   onClick={() => setDeleteTarget(doc)}
-                  className="btn-press text-text-dim hover:text-red transition-all cursor-pointer p-1.5 rounded-[var(--radius-sm)] hover:bg-red-muted"
+                  className="btn-press text-text-muted hover:text-red transition-all cursor-pointer p-1.5 rounded-[var(--radius-sm)] hover:bg-red-muted"
                   title="Delete"
                 >
                   <TrashIcon size={16} />

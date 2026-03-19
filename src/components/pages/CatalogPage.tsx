@@ -46,10 +46,10 @@ export function CatalogPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in-up">
         <div>
-          <h1 className="text-lg font-semibold text-text-bright">{t('catalog.title')}</h1>
-          <p className="text-sm text-text-muted mt-0.5">
+          <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">{t('catalog.title')}</h1>
+          <p className="text-sm text-text-muted mt-2">
             {t('catalog.subtitle')}
           </p>
         </div>
@@ -83,15 +83,16 @@ export function CatalogPage() {
             description={t('catalog.noCatalogsDescription')}
           />
         ) : (
-          catalogs.map((catalog) => (
+          catalogs.map((catalog, i) => (
             <div
               key={catalog.id}
               onClick={() => selectCatalog(catalog.id)}
-              className={`glass border rounded-[var(--radius-md)] px-4 py-3 cursor-pointer transition-all duration-200 ${
+              className={`glass border rounded-[var(--radius-lg)] px-4 py-3 cursor-pointer glow-card animate-fade-in-up ${
                 selectedCatalogId === catalog.id
                   ? "border-accent/50 bg-accent-dim/30"
                   : "border-border hover:border-border-hi hover:bg-surface-hover"
               }`}
+              style={{ animationDelay: `${Math.min(i * 0.04, 0.3)}s` }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -99,7 +100,7 @@ export function CatalogPage() {
                     <span className="text-sm font-medium text-text-bright">
                       {catalog.name}
                     </span>
-                    <p className="text-xs text-text-dim mt-0.5">
+                    <p className="text-xs text-text-muted font-mono mt-0.5">
                       {t('catalog.effective', { date: new Date(catalog.effectiveDate).toLocaleDateString() })}
                     </p>
                   </div>
@@ -147,7 +148,7 @@ export function CatalogPage() {
       {/* Items table */}
       {selectedCatalog && (
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between animate-fade-in-up">
             <h2 className="text-sm font-semibold text-text-bright">
               {t('catalog.items', { name: selectedCatalog.name })}
             </h2>
@@ -170,11 +171,11 @@ export function CatalogPage() {
               description={t('catalog.noItemsDescription')}
             />
           ) : (
-            <div className="glass border border-border rounded-[var(--radius-md)] overflow-hidden">
+            <div className="glass border border-border rounded-[var(--radius-lg)] overflow-hidden animate-fade-in-up">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-surface-hi/50">
+                    <tr className="border-b border-border bg-surface-hi/30">
                       <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">{t('catalog.code')}</th>
                       <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">{t('common.name')}</th>
                       <th className="text-left px-4 py-2.5 text-xs font-medium text-text-muted">{t('catalog.category')}</th>
@@ -186,12 +187,12 @@ export function CatalogPage() {
                   </thead>
                   <tbody>
                     {items.map((item) => (
-                      <tr key={item.id} className="border-b border-border last:border-0 hover:bg-surface-hover transition-colors">
+                      <tr key={item.id} className="border-b border-border last:border-0 hover:bg-surface-hover/60 transition-all duration-200">
                         <td className="px-4 py-2.5 text-text-muted font-mono text-xs">{item.code}</td>
                         <td className="px-4 py-2.5 text-text-bright">
                           <div>{item.name}</div>
                           {item.description && (
-                            <div className="text-xs text-text-dim truncate max-w-[200px]">{item.description}</div>
+                            <div className="text-xs text-text-muted truncate max-w-[200px]">{item.description}</div>
                           )}
                         </td>
                         <td className="px-4 py-2.5 text-text-muted">{item.category ?? "—"}</td>

@@ -27,12 +27,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const setActiveView = useCallback((view: ActiveView) => {
-    setActiveViewRaw((prev) => {
-      if (prev !== view) {
-        setNavKey((k) => k + 1);
-      }
-      return view;
-    });
+    setActiveViewRaw(view);
+    setNavKey((k) => k + 1);
   }, []);
 
   const addToast = useCallback((message: string, type: ToastType = "info") => {

@@ -45,7 +45,9 @@
     "catalog": "Catalog",
     "organizations": "Organizations",
     "whatsappMgmt": "WhatsApp Mgmt",
-    "chat": "Chat"
+    "chat": "Chat",
+    "admin": "Admin",
+    "platform": "Platform"
   },
   "login": {
     "signIn": "Sign in to your account",
@@ -107,7 +109,11 @@
     "quickActions": "Quick Actions",
     "uploadContent": "Upload content",
     "whatsappSettings": "WhatsApp settings",
-    "offline": "Offline"
+    "startChat": "Chat with AI",
+    "offline": "Offline",
+    "greetingMorning": "Good morning",
+    "greetingAfternoon": "Good afternoon",
+    "greetingEvening": "Good evening"
   },
   "onboarding": {
     "welcome": "Welcome, {{name}}!",
@@ -429,6 +435,9 @@
     "suggestionSearch": "Search documents",
     "suggestionQuote": "Generate a quote",
     "suggestionAsk": "Ask a question",
+    "suggestionSearchPrompt": "What documents do I have in my knowledge base?",
+    "suggestionQuotePrompt": "I need to create a quote",
+    "suggestionAskPrompt": "What can you help me with?",
     "tool_searching": "Searching documents...",
     "tool_generating_quote": "Generating quote...",
     "tool_searching_youtube": "Searching YouTube...",

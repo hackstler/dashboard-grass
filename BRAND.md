@@ -80,9 +80,11 @@ Cada status tiene su variante `-muted` al 8% opacity para fondos.
 ### Font Stacks
 
 ```css
---font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
---font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+--font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
 ```
+
+> Cargadas via Google Fonts en `index.html`: Inter (400-800) + JetBrains Mono (400-600).
 
 **Mono** es la fuente protagonista — IDs, códigos, datos técnicos, badges. Todo lo que tenga identidad técnica va en mono.
 

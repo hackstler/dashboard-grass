@@ -99,11 +99,11 @@ export function ProfilePage() {
                 {displayName}
               </p>
               <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-xs text-text-dim">
+                <span className="text-xs text-text-muted font-mono">
                   {user?.email}
                 </span>
-                <span className="text-text-dim">&middot;</span>
-                <span className="text-xs text-text-dim font-mono">
+                <span className="text-text-muted/50">&middot;</span>
+                <span className="text-xs text-text-muted/70 font-mono">
                   {user?.orgId}
                 </span>
                 <Badge

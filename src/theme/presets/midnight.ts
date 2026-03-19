@@ -43,11 +43,11 @@ export const midnight: ThemeTokens = {
   // Shadows
   shadowCard: "0 0 0 1px rgba(255,255,255,0.04), 0 2px 8px rgba(0,0,0,0.4)",
   shadowCardHover: "0 0 0 1px rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.5), 0 0 48px var(--card-glow, rgba(59,130,246,0.06))",
-  shadowGlowAccent: "0 0 30px rgba(59,130,246,0.3), 0 0 60px rgba(59,130,246,0.1)",
-  shadowGlowGreen: "0 0 30px rgba(34,197,94,0.25), 0 0 60px rgba(34,197,94,0.08)",
-  shadowToastSuccess: "0 0 24px rgba(34, 197, 94, 0.15), 0 0 48px rgba(34, 197, 94, 0.05)",
-  shadowToastError: "0 0 24px rgba(239, 68, 68, 0.15), 0 0 48px rgba(239, 68, 68, 0.05)",
-  shadowToastInfo: "0 0 24px rgba(59, 130, 246, 0.15), 0 0 48px rgba(59, 130, 246, 0.05)",
+  shadowGlowAccent: "0 0 24px rgba(59,130,246,0.35), 0 0 56px rgba(59,130,246,0.12)",
+  shadowGlowGreen: "0 0 24px rgba(34,197,94,0.30), 0 0 56px rgba(34,197,94,0.10)",
+  shadowToastSuccess: "0 0 20px rgba(34, 197, 94, 0.20), 0 0 40px rgba(34, 197, 94, 0.06)",
+  shadowToastError: "0 0 20px rgba(239, 68, 68, 0.20), 0 0 40px rgba(239, 68, 68, 0.06)",
+  shadowToastInfo: "0 0 20px rgba(59, 130, 246, 0.20), 0 0 40px rgba(59, 130, 246, 0.06)",
   shadowNavActive: "inset 0 0 0 1px rgba(59, 130, 246, 0.2), 0 0 16px rgba(59, 130, 246, 0.08)",
 
   // Radii
@@ -57,6 +57,6 @@ export const midnight: ThemeTokens = {
   radiusXl: "1rem",
 
   // Fonts
-  fontMono: "'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', 'Consolas', monospace",
-  fontSans: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+  fontMono: "'JetBrains Mono', 'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace",
+  fontSans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
 };

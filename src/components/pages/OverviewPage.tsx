@@ -16,6 +16,7 @@ import {
   BuildingIcon,
   TagIcon,
   UploadIcon,
+  ChatIcon,
 } from "../ui/Icons";
 
 export function OverviewPage() {
@@ -61,7 +62,8 @@ export function OverviewPage() {
       {/* Header */}
       <div className="mb-10 animate-fade-in-up relative">
         <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
-          {t('overview.title')}
+          {t(`overview.${new Date().getHours() < 12 ? "greetingMorning" : new Date().getHours() < 19 ? "greetingAfternoon" : "greetingEvening"}`)}
+          {user?.name ? `, ${user.name}` : ""}
         </h1>
         <p className="text-sm text-text-muted mt-2">
           {t('overview.subtitle')}
@@ -279,6 +281,15 @@ export function OverviewPage() {
               onClick={() => setActiveView("knowledge-upload")}
             >
               {t('overview.uploadContent')}
+            </Button>
+          )}
+          {can("use_chat") && (
+            <Button
+              variant="secondary"
+              icon={<ChatIcon size={16} />}
+              onClick={() => setActiveView("chat")}
+            >
+              {t('overview.startChat')}
             </Button>
           )}
           <Button

@@ -45,10 +45,17 @@ export function ChatInput({ onSend, disabled, streaming, onStop }: ChatInputProp
     }
   }, [streaming]);
 
+  const handleContainerClick = (e: React.MouseEvent) => {
+    // Only focus if clicking the container itself, not buttons
+    if (e.target === e.currentTarget || !(e.target as HTMLElement).closest("button")) {
+      textareaRef.current?.focus();
+    }
+  };
+
   return (
-    <div className="px-4 py-4 bg-gradient-to-t from-bg via-bg to-transparent">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex items-end gap-2 glass border border-border-hi/60 rounded-2xl px-4 py-3 shadow-[var(--shadow-card)] focus-within:border-accent/30 focus-within:shadow-[0_0_24px_rgba(59,130,246,0.08)] transition-all duration-300">
+    <div className="px-4 py-4 cursor-text" onClick={handleContainerClick}>
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-end gap-2 bg-surface border border-border rounded-2xl px-4 py-3 shadow-[var(--shadow-card)] focus-within:border-accent/30 focus-within:shadow-[0_0_24px_rgba(59,130,246,0.08)] transition-all duration-300">
           <textarea
             ref={textareaRef}
             value={value}

@@ -72,7 +72,7 @@ export function ConversationList({
                   <p className={`text-xs truncate ${active ? "text-accent font-medium" : "text-text"}`}>
                     {conv.title ?? t("chat.untitled")}
                   </p>
-                  <p className="text-[10px] text-text-dim mt-0.5 font-mono">
+                  <p className="text-[10px] text-text-muted mt-0.5 font-mono">
                     {formatRelativeDate(conv.updatedAt)}
                   </p>
                 </div>

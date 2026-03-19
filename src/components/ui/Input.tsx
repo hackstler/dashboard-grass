@@ -28,13 +28,13 @@ export function Input({
       )}
       <div className="relative">
         {icon && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-dim">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
             {icon}
           </span>
         )}
         <input
           id={inputId}
-          className={`w-full bg-surface border border-border text-text text-sm px-3 py-2 rounded-[var(--radius-md)] outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20 transition-colors placeholder:text-text-dim ${
+          className={`neon-input w-full bg-surface border border-border text-text text-sm px-3 py-2.5 rounded-[var(--radius-md)] outline-none placeholder:text-text-muted ${
             icon ? "pl-9" : ""
           } ${error ? "border-red/50" : ""} ${className}`}
           {...props}

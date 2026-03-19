@@ -45,7 +45,9 @@
     "catalog": "Catálogo",
     "organizations": "Organizaciones",
     "whatsappMgmt": "WhatsApp Admin",
-    "chat": "Chat"
+    "chat": "Chat",
+    "admin": "Admin",
+    "platform": "Plataforma"
   },
   "login": {
     "signIn": "Inicia sesión en tu cuenta",
@@ -107,7 +109,11 @@
     "quickActions": "Acciones rápidas",
     "uploadContent": "Subir contenido",
     "whatsappSettings": "Ajustes WhatsApp",
-    "offline": "Sin conexión"
+    "startChat": "Chatear con IA",
+    "offline": "Sin conexión",
+    "greetingMorning": "Buenos días",
+    "greetingAfternoon": "Buenas tardes",
+    "greetingEvening": "Buenas noches"
   },
   "onboarding": {
     "welcome": "¡Bienvenido, {{name}}!",
@@ -429,6 +435,9 @@
     "suggestionSearch": "Buscar documentos",
     "suggestionQuote": "Generar presupuesto",
     "suggestionAsk": "Hacer una pregunta",
+    "suggestionSearchPrompt": "¿Qué documentos tengo en mi base de conocimiento?",
+    "suggestionQuotePrompt": "Necesito crear un presupuesto",
+    "suggestionAskPrompt": "¿En qué puedes ayudarme?",
     "tool_searching": "Buscando en documentos...",
     "tool_generating_quote": "Generando presupuesto...",
     "tool_searching_youtube": "Buscando en YouTube...",

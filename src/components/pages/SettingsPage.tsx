@@ -59,8 +59,8 @@ export function SettingsPage() {
   };
 
   return (
-    <div>
-      <div className="mb-8 animate-fade-in-up">
+    <div className="space-y-6">
+      <div className="animate-fade-in-up">
         <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
           {t('settings.title')}
         </h1>

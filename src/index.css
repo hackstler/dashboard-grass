@@ -1,63 +1,78 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg:         #09090b;
-  --color-surface:    #0f0f12;
-  --color-surface-hi: #17171c;
-  --color-surface-hover: #1c1c22;
+  /* ── Surfaces ──────────────────────────────────────────── */
+  --color-bg:             #09090b;
+  --color-surface:        #0f0f12;
+  --color-surface-hi:     #17171c;
+  --color-surface-hover:  #1c1c22;
   --color-surface-raised: #222228;
-  --color-border:     #1c1c24;
-  --color-border-hi:  #2a2a35;
+  --color-border:         #1c1c24;
+  --color-border-hi:      #2a2a35;
 
-  --color-text:        #a1a1aa;
-  --color-text-bright: #fafafa;
-  --color-text-muted:  #63636e;
-  --color-text-dim:    #33333d;
+  /* ── Typography ────────────────────────────────────────── */
+  --color-text:           #a1a1aa;
+  --color-text-bright:    #fafafa;
+  --color-text-muted:     #63636e;
+  --color-text-dim:       #33333d;
 
-  --color-accent:       #3b82f6;
-  --color-accent-hover: #2563eb;
-  --color-accent-muted: #1d4ed8;
-  --color-accent-dim:   rgba(59, 130, 246, 0.08);
+  /* ── Brand Triad (Hackstler) ───────────────────────────── */
+  --color-accent:         #3b82f6;
+  --color-accent-hover:   #2563eb;
+  --color-accent-muted:   #1d4ed8;
+  --color-accent-dim:     rgba(59, 130, 246, 0.08);
 
-  --color-green:       #22c55e;
-  --color-green-muted: rgba(34, 197, 94, 0.08);
-  --color-yellow:      #eab308;
-  --color-yellow-muted: rgba(234, 179, 8, 0.08);
-  --color-red:         #ef4444;
-  --color-red-muted:   rgba(239, 68, 68, 0.08);
-
-  --shadow-card:       0 0 0 1px rgba(255,255,255,0.04), 0 2px 8px rgba(0,0,0,0.4);
-  --shadow-card-hover: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.5), 0 0 48px var(--card-glow, rgba(59,130,246,0.06));
-  --shadow-glow-accent: 0 0 30px rgba(59,130,246,0.3), 0 0 60px rgba(59,130,246,0.1);
-  --shadow-glow-green:  0 0 30px rgba(34,197,94,0.25), 0 0 60px rgba(34,197,94,0.08);
-
-  /* Brand secondary/tertiary */
   --color-brand:          #8b5cf6;
   --color-brand-dim:      rgba(139, 92, 246, 0.08);
   --color-brand-accent:   #ec4899;
 
-  /* Glass surfaces */
+  /* ── Semantic ──────────────────────────────────────────── */
+  --color-green:          #22c55e;
+  --color-green-muted:    rgba(34, 197, 94, 0.08);
+  --color-yellow:         #eab308;
+  --color-yellow-muted:   rgba(234, 179, 8, 0.08);
+  --color-red:            #ef4444;
+  --color-red-muted:      rgba(239, 68, 68, 0.08);
+
+  /* ── Shadows & Glows ───────────────────────────────────── */
+  --shadow-card:          0 0 0 1px rgba(255,255,255,0.04), 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-card-hover:    0 0 0 1px rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.5), 0 0 48px var(--card-glow, rgba(59,130,246,0.06));
+  --shadow-glow-accent:   0 0 24px rgba(59,130,246,0.35), 0 0 56px rgba(59,130,246,0.12);
+  --shadow-glow-green:    0 0 24px rgba(34,197,94,0.30), 0 0 56px rgba(34,197,94,0.10);
+
+  /* ── Glass surfaces ────────────────────────────────────── */
   --color-glass:          rgba(15, 15, 18, 0.80);
   --color-glass-subtle:   rgba(15, 15, 18, 0.60);
 
-  /* Toast glow shadows */
-  --shadow-toast-success: 0 0 24px rgba(34, 197, 94, 0.15), 0 0 48px rgba(34, 197, 94, 0.05);
-  --shadow-toast-error:   0 0 24px rgba(239, 68, 68, 0.15), 0 0 48px rgba(239, 68, 68, 0.05);
-  --shadow-toast-info:    0 0 24px rgba(59, 130, 246, 0.15), 0 0 48px rgba(59, 130, 246, 0.05);
+  /* ── Toast glow shadows ────────────────────────────────── */
+  --shadow-toast-success: 0 0 20px rgba(34, 197, 94, 0.20), 0 0 40px rgba(34, 197, 94, 0.06);
+  --shadow-toast-error:   0 0 20px rgba(239, 68, 68, 0.20), 0 0 40px rgba(239, 68, 68, 0.06);
+  --shadow-toast-info:    0 0 20px rgba(59, 130, 246, 0.20), 0 0 40px rgba(59, 130, 246, 0.06);
 
-  /* Nav active inset */
+  /* ── Nav active inset ──────────────────────────────────── */
   --shadow-nav-active:    inset 0 0 0 1px rgba(59, 130, 246, 0.2), 0 0 16px rgba(59, 130, 246, 0.08);
 
-  /* Shimmer highlight */
+  /* ── Shimmer highlight ─────────────────────────────────── */
   --color-shimmer:        rgba(255, 255, 255, 0.03);
 
+  /* ── Radii ─────────────────────────────────────────────── */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
 
-  --font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  /* ── Typography stacks ─────────────────────────────────── */
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── Base typography refinement ──────────────────────────── */
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.011em;
 }
 
 /* ── Animations ──────────────────────────────────────────── */
@@ -218,8 +233,8 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--stat-accent, var(--color-accent)), transparent);
-  opacity: 0.9;
+  background: linear-gradient(90deg, transparent 5%, var(--stat-accent, var(--color-accent)) 50%, transparent 95%);
+  opacity: 1;
 }
 .stat-card::after {
   content: '';
@@ -275,6 +290,96 @@
 }
 .gradient-border:hover::before {
   opacity: 1;
+}
+
+/* ── HUD corner accents ──────────────────────────────────── */
+.hud-corners {
+  position: relative;
+}
+.hud-corners::before,
+.hud-corners::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+.hud-corners::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--color-accent);
+  border-left: 2px solid var(--color-accent);
+}
+.hud-corners::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--color-accent);
+  border-right: 2px solid var(--color-accent);
+}
+.hud-corners:hover::before,
+.hud-corners:hover::after {
+  opacity: 0.8;
+}
+
+/* ── Scanlines overlay ───────────────────────────────────── */
+.scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(255, 255, 255, 0.008) 2px,
+    rgba(255, 255, 255, 0.008) 4px
+  );
+  border-radius: inherit;
+}
+
+/* ── Glitch text effect ──────────────────────────────────── */
+@keyframes glitch-1 {
+  0%, 100% { clip-path: inset(0 0 90% 0); transform: translateX(0); }
+  20%      { clip-path: inset(30% 0 40% 0); transform: translateX(-3px); }
+  40%      { clip-path: inset(60% 0 10% 0); transform: translateX(3px); }
+  60%      { clip-path: inset(10% 0 70% 0); transform: translateX(-2px); }
+  80%      { clip-path: inset(80% 0 0% 0); transform: translateX(1px); }
+}
+.glitch-hover {
+  position: relative;
+}
+.glitch-hover:hover {
+  animation: glitch-1 0.3s ease both;
+}
+
+/* ── Neon input focus ────────────────────────────────────── */
+.neon-input {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+.neon-input:focus {
+  border-color: rgba(59, 130, 246, 0.40);
+  background-color: rgba(59, 130, 246, 0.03);
+  box-shadow: 0 1px 12px rgba(59, 130, 246, 0.15), inset 0 -1px 0 rgba(59, 130, 246, 0.35);
+}
+
+/* ── Cyberpunk grid background ────────────────────────────── */
+.cyber-grid {
+  position: relative;
+}
+.cyber-grid::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  -webkit-mask: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
+  mask: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
 }
 
 /* ── Noise overlay ───────────────────────────────────────── */

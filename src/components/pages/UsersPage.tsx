@@ -357,15 +357,15 @@ export function UsersPage() {
                   )}
                 </p>
                 <div className="flex flex-wrap items-center gap-2 mt-0.5">
-                  <span className="text-xs text-text-dim">
+                  <span className="text-xs text-text-muted font-mono">
                     {u.email}
                   </span>
-                  <span className="text-text-dim">&middot;</span>
-                  <span className="text-xs text-text-dim font-mono">
+                  <span className="text-text-muted/50">&middot;</span>
+                  <span className="text-xs text-text-muted/70 font-mono">
                     {u.orgId}
                   </span>
-                  <span className="text-text-dim">&middot;</span>
-                  <span className="text-xs text-text-dim">
+                  <span className="text-text-muted/50">&middot;</span>
+                  <span className="text-xs text-text-muted font-mono">
                     {formatDate(u.createdAt)}
                   </span>
                 </div>
@@ -594,7 +594,7 @@ export function UsersPage() {
                     {inv.email ?? t('users.noEmail')}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs text-text-dim">
+                    <span className="text-xs text-text-muted font-mono">
                       {t('users.expires', { date: formatDate(inv.expiresAt) })}
                     </span>
                   </div>

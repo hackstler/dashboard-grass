@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { useTranslation } from "react-i18next";
 import { Sidebar } from "./Sidebar";
 import { ToastContainer } from "./ui/Toast";
 import { MenuIcon } from "./ui/Icons";
@@ -12,7 +11,6 @@ interface LayoutProps {
 }
 
 export function Layout({ onLogout, children }: LayoutProps) {
-  const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { toasts, removeToast } = useApp();
 
@@ -32,12 +30,15 @@ export function Layout({ onLogout, children }: LayoutProps) {
           >
             <MenuIcon size={20} />
           </button>
-          <span className="font-semibold text-sm text-text-bright">
-            {t('nav.agentDashboard')}
+          <span className="font-bold text-sm text-text-bright font-mono tracking-tight">
+            hackstler
           </span>
         </header>
 
-        <main className="flex-1 overflow-y-auto overflow-x-hidden relative">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden relative cyber-grid">
+          {/* Global ambient orbs */}
+          <div className="ambient-orb w-[500px] h-[400px] bg-accent/[0.04] -top-20 right-0 fixed" />
+          <div className="ambient-orb w-[400px] h-[300px] bg-brand/[0.03] bottom-0 -left-20 fixed" style={{ animationDelay: "2s" }} />
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 relative">{children}</div>
         </main>
       </div>

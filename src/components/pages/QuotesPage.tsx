@@ -93,27 +93,27 @@ export function QuotesPage() {
           {quotes.map((quote, i) => (
             <div
               key={quote.id}
-              className="flex flex-wrap sm:flex-nowrap items-center gap-4 px-4 py-3 bg-surface border border-border rounded-[var(--radius-lg)] glow-card animate-fade-in-up"
+              className="flex flex-wrap sm:flex-nowrap items-center gap-4 px-4 py-3 bg-surface border border-border border-l-2 border-l-accent/20 rounded-[var(--radius-lg)] glow-card animate-fade-in-up"
               style={{ animationDelay: `${Math.min(i * 0.04, 0.4)}s` }}
             >
-              <div className="w-8 h-8 rounded-[var(--radius-md)] bg-surface-hi flex items-center justify-center shrink-0">
-                <FileTextIcon size={16} className="text-text-muted" />
+              <div className="w-8 h-8 rounded-[var(--radius-md)] bg-accent-dim flex items-center justify-center shrink-0">
+                <FileTextIcon size={16} className="text-accent" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-text-bright font-medium truncate">
+                <p className="text-sm text-text-bright font-medium font-mono truncate">
                   {quote.quoteNumber}
                 </p>
                 <div className="flex flex-wrap items-center gap-2 mt-0.5">
-                  <span className="text-xs text-text-dim">
+                  <span className="text-xs text-text-muted">
                     {quote.clientName}
                   </span>
-                  <span className="text-text-dim">&middot;</span>
-                  <span className="text-xs text-text-dim">
+                  <span className="text-text-muted">&middot;</span>
+                  <span className="text-xs text-text-muted">
                     {formatDate(quote.createdAt)}
                   </span>
                 </div>
               </div>
-              <span className="text-sm text-text-bright font-semibold tabular-nums whitespace-nowrap">
+              <span className="text-sm text-text-bright font-semibold font-mono tabular-nums whitespace-nowrap">
                 {Number(quote.total).toLocaleString("es-ES", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,

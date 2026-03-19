@@ -20,7 +20,7 @@ function statusBadge(status: string) {
     case "pending":
       return <Badge variant="warning">{status === "qr" ? i18n.t('whatsapp.awaitingScan') : i18n.t('common.pending')}</Badge>;
     default:
-      return <Badge variant="default">{status}</Badge>;
+      return <Badge variant="default">{i18n.t(`common.${status}`, { defaultValue: status })}</Badge>;
   }
 }
 
@@ -70,20 +70,32 @@ export function WhatsAppConnectionsPage() {
 
   if (loading) {
     return (
-      <div className="space-y-3">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div
-            key={i}
-            className="bg-surface border border-border rounded-[var(--radius-lg)] p-4 flex items-center gap-4"
-          >
-            <Skeleton className="w-8 h-8 rounded-full" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-1/3" />
-              <Skeleton className="h-3 w-1/4" />
-            </div>
-            <Skeleton className="h-5 w-16" />
+      <div>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold gradient-text tracking-tight">
+              {t('whatsappConnections.title')}
+            </h1>
+            <p className="text-sm text-text-muted mt-2">
+              {t('whatsappConnections.subtitle')}{isSuperAdmin ? t('whatsappConnections.subtitleAllOrgs') : ""}.
+            </p>
           </div>
-        ))}
+        </div>
+        <div className="space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-surface border border-border rounded-[var(--radius-lg)] p-4 flex items-center gap-4"
+            >
+              <Skeleton className="w-8 h-8 rounded-full" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-3 w-1/4" />
+              </div>
+              <Skeleton className="h-5 w-16" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -121,23 +133,23 @@ export function WhatsAppConnectionsPage() {
                 {(conn.userEmail ?? conn.userId).charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-text-bright font-medium truncate">
+                <p className="text-sm text-text-bright font-medium font-mono truncate">
                   {conn.userEmail ?? conn.userId}
                 </p>
                 <div className="flex flex-wrap items-center gap-2 mt-0.5">
                   {isSuperAdmin && (
                     <>
-                      <span className="text-xs text-text-dim font-mono">
+                      <span className="text-xs text-accent/60 font-mono">
                         {conn.orgId}
                       </span>
-                      <span className="text-text-dim">&middot;</span>
+                      <span className="text-text-muted">&middot;</span>
                     </>
                   )}
-                  <span className="text-xs text-text-dim">
+                  <span className="text-xs text-text-muted">
                     {conn.phone ?? t('common.noPhone')}
                   </span>
-                  <span className="text-text-dim">&middot;</span>
-                  <span className="text-xs text-text-dim">
+                  <span className="text-text-muted">&middot;</span>
+                  <span className="text-xs text-text-muted">
                     {new Date(conn.updatedAt).toLocaleString()}
                   </span>
                 </div>

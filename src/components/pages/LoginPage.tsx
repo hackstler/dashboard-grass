@@ -69,11 +69,14 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       <div className="w-full max-w-sm animate-fade-in-up relative">
         <div className="flex flex-col items-center mb-8">
           <div className="w-14 h-14 bg-gradient-to-br from-accent to-brand rounded-[var(--radius-xl)] flex items-center justify-center mb-5 shadow-[var(--shadow-glow-accent)] animate-[float_4s_ease-in-out_infinite]">
-            <span className="text-white text-2xl font-bold">A</span>
+            <span className="text-white text-2xl font-bold font-mono">H</span>
           </div>
-          <h1 className="text-2xl font-bold gradient-text">
-            {t('login.signIn')}
+          <h1 className="text-2xl font-bold font-mono text-text-bright tracking-tight">
+            hackstler
           </h1>
+          <p className="text-[11px] text-accent/60 font-mono tracking-wider uppercase mt-1 mb-1">
+            {t('login.signIn')}
+          </p>
           <p className="text-xs text-text-muted mt-2">
             {isFirebase
               ? t('login.signInGoogle')
@@ -144,7 +147,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                 className={`btn-press px-5 py-1.5 font-mono text-[11px] font-semibold tracking-wider rounded-[var(--radius-sm)] transition-all duration-300 cursor-pointer backdrop-blur-sm ${
                   active
                     ? "bg-accent-dim text-accent shadow-[0_0_16px_rgba(59,130,246,0.15)] border border-accent/20"
-                    : "text-text-dim hover:text-text-muted hover:bg-glass-subtle border border-transparent"
+                    : "text-text-muted hover:text-text hover:bg-glass-subtle border border-transparent"
                 }`}
               >
                 {label}
