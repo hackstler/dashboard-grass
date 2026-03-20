@@ -1,22 +1,9 @@
-import { detectAttachments, formatContent } from "../../utils/chat";
+import { detectAttachments, formatContent, downloadBase64Pdf } from "../../utils/chat";
 import { FileTextIcon, DownloadIcon } from "../ui/Icons";
 import type { ChatMessage } from "../../types";
 
 interface MessageBubbleProps {
   message: ChatMessage;
-}
-
-function downloadBase64Pdf(base64: string, filename: string) {
-  const byteChars = atob(base64);
-  const bytes = new Uint8Array(byteChars.length);
-  for (let i = 0; i < byteChars.length; i++) bytes[i] = byteChars.charCodeAt(i);
-  const blob = new Blob([bytes], { type: "application/pdf" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 export function MessageBubble({ message }: MessageBubbleProps) {
@@ -36,7 +23,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         className={`max-w-[80%] text-sm leading-relaxed ${
           isUser
             ? "bg-gradient-to-br from-accent to-accent-hover text-white rounded-2xl rounded-br-md px-4 py-3 shadow-[0_2px_12px_rgba(59,130,246,0.25)]"
-            : "glass border border-border-hi/60 rounded-2xl rounded-bl-md px-4 py-3 shadow-[var(--shadow-card)]"
+            : "bg-surface border border-border-hi/60 border-t-accent/20 rounded-2xl rounded-bl-md px-4 py-3 shadow-[var(--shadow-card)]"
         }`}
       >
         {text && (

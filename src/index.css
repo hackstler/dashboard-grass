@@ -242,9 +242,9 @@ body {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 80%;
-  height: 100px;
-  background: radial-gradient(ellipse at top, var(--stat-glow, rgba(59,130,246,0.12)), transparent 70%);
+  width: 90%;
+  height: 120px;
+  background: radial-gradient(ellipse at top, var(--stat-glow, rgba(59,130,246,0.18)), transparent 70%);
   pointer-events: none;
 }
 
@@ -323,20 +323,49 @@ body {
   opacity: 0.8;
 }
 
-/* ── Scanlines overlay ───────────────────────────────────── */
-.scanlines::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background: repeating-linear-gradient(
+/* ── Scanlines texture (via background-image, no pseudo needed) ── */
+.scanlines {
+  background-image: repeating-linear-gradient(
     0deg,
     transparent 0px,
     transparent 2px,
-    rgba(255, 255, 255, 0.008) 2px,
-    rgba(255, 255, 255, 0.008) 4px
+    rgba(255, 255, 255, 0.012) 2px,
+    rgba(255, 255, 255, 0.012) 4px
   );
+  background-size: 100% 4px;
+}
+
+/* ── Neon flicker (broken neon sign effect) ───────────────── */
+@keyframes neon-flicker {
+  0%, 100%  { opacity: 1; }
+  4%        { opacity: 0.8; }
+  6%        { opacity: 1; }
+  8%        { opacity: 0.6; }
+  9%        { opacity: 1; }
+  42%       { opacity: 1; }
+  43%       { opacity: 0.85; }
+  44%       { opacity: 1; }
+  80%       { opacity: 1; }
+  82%       { opacity: 0.7; }
+  83%       { opacity: 1; }
+}
+.neon-flicker {
+  animation: neon-flicker 4s ease-in-out infinite;
+}
+
+/* ── Accent top-line (gradient bar on top of containers) ──── */
+.accent-line {
+  position: relative;
+}
+.accent-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), var(--color-brand), transparent);
+  opacity: 0.4;
   border-radius: inherit;
 }
 
@@ -409,4 +438,54 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-dim);
+}
+
+/* ══════════════════════════════════════════════════════════ */
+/* ── Light theme overrides ─────────────────────────────── */
+/* ══════════════════════════════════════════════════════════ */
+
+.theme-light .scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+}
+
+/* Warm brown grid lines — like old graph paper */
+.theme-light .cyber-grid::before {
+  background-image:
+    linear-gradient(rgba(80, 60, 30, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(80, 60, 30, 0.06) 1px, transparent 1px);
+}
+
+.theme-light .noise-bg::after {
+  opacity: 0.04;
+}
+
+.theme-light .gradient-text {
+  background: linear-gradient(135deg, #18160e 0%, #1d4ed8 50%, #6d28d9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.theme-light .glow-card:hover {
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.08), 0 0 40px var(--stat-glow, rgba(37,99,235,0.06));
+}
+
+.theme-light .neon-input:focus {
+  border-color: rgba(37, 99, 235, 0.40);
+  background-color: rgba(37, 99, 235, 0.03);
+  box-shadow: 0 1px 12px rgba(37, 99, 235, 0.10), inset 0 -1px 0 rgba(37, 99, 235, 0.25);
+}
+
+.theme-light .ambient-orb {
+  opacity: 0.5;
+}
+
+.theme-light .gradient-bar {
+  opacity: 0.9;
 }

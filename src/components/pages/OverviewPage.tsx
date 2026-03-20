@@ -74,7 +74,7 @@ export function OverviewPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-10">
         {/* WhatsApp */}
         <div
-          className="stat-card glow-card bg-surface border border-border rounded-[var(--radius-xl)] p-6 animate-fade-in-up stagger-1"
+          className="stat-card glow-card scanlines bg-surface border border-border rounded-[var(--radius-xl)] p-6 animate-fade-in-up stagger-1"
           style={
             {
               "--stat-accent": waConnected
@@ -149,7 +149,7 @@ export function OverviewPage() {
         {/* Knowledge Base */}
         {can("view_knowledge") && (
           <div
-            className="stat-card glow-card bg-surface border border-border rounded-[var(--radius-xl)] p-6 animate-fade-in-up stagger-2"
+            className="stat-card glow-card scanlines bg-surface border border-border rounded-[var(--radius-xl)] p-6 animate-fade-in-up stagger-2"
             style={
               {
                 "--stat-accent": "#3b82f6",
@@ -197,7 +197,7 @@ export function OverviewPage() {
 
         {/* Organization */}
         <div
-          className="stat-card glow-card bg-surface border border-border rounded-[var(--radius-xl)] p-6 animate-fade-in-up stagger-3"
+          className="stat-card glow-card scanlines bg-surface border border-border rounded-[var(--radius-xl)] p-6 animate-fade-in-up stagger-3"
           style={
             {
               "--stat-accent": "#8b5cf6",
@@ -226,7 +226,7 @@ export function OverviewPage() {
         {/* Catalog */}
         {can("manage_catalogs") && (
           <div
-            className="stat-card glow-card bg-surface border border-border rounded-[var(--radius-xl)] p-6 animate-fade-in-up stagger-4"
+            className="stat-card glow-card scanlines bg-surface border border-border rounded-[var(--radius-xl)] p-6 animate-fade-in-up stagger-4"
             style={
               {
                 "--stat-accent": "#f59e0b",
@@ -270,7 +270,8 @@ export function OverviewPage() {
 
       {/* Quick Actions */}
       <div className="animate-fade-in-up stagger-5">
-        <h2 className="text-sm font-semibold text-text-bright mb-3">
+        <h2 className="text-sm font-semibold text-text-bright mb-3 flex items-center gap-2">
+          <span className="text-accent/40 font-mono text-xs">&gt;_</span>
           {t('overview.quickActions')}
         </h2>
         <div className="flex flex-wrap gap-3">

@@ -157,7 +157,8 @@ export function useChatStream(): UseChatStreamReturn {
     }
 
     const finalContent = contentRef.current;
-    if (!finalContent) {
+    const hasAttachments = attachmentsRef.current.length > 0;
+    if (!finalContent && !hasAttachments) {
       setPending(null);
       return { assistantMessage: null, conversationId: resolvedConvId };
     }

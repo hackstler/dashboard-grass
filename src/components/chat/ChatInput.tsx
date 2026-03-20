@@ -64,6 +64,7 @@ export function ChatInput({ onSend, disabled, streaming, onStop }: ChatInputProp
             onInput={handleInput}
             placeholder={t("chat.placeholder")}
             rows={1}
+            autoFocus
             className="flex-1 bg-transparent text-sm text-text-bright placeholder:text-text-dim resize-none outline-none max-h-40 leading-relaxed"
           />
           {streaming ? (

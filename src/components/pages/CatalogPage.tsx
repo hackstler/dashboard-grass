@@ -87,7 +87,7 @@ export function CatalogPage() {
             <div
               key={catalog.id}
               onClick={() => selectCatalog(catalog.id)}
-              className={`glass border rounded-[var(--radius-lg)] px-4 py-3 cursor-pointer glow-card animate-fade-in-up ${
+              className={`glass border rounded-[var(--radius-lg)] px-4 py-3 cursor-pointer glow-card accent-line animate-fade-in-up ${
                 selectedCatalogId === catalog.id
                   ? "border-accent/50 bg-accent-dim/30"
                   : "border-border hover:border-border-hi hover:bg-surface-hover"

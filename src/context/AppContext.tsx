@@ -1,7 +1,12 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { User, ActiveView, Toast, ToastType, AuthState } from "../types";
 import { getMe } from "../api/auth";
+import { applyTheme, midnight, bone } from "../theme";
+
+export type ThemeMode = "dark" | "light";
+
+const THEME_PRESETS = { dark: midnight, light: bone } as const;
 
 interface AppContextValue {
   authState: AuthState;
@@ -14,6 +19,8 @@ interface AppContextValue {
   addToast: (message: string, type?: ToastType) => void;
   removeToast: (id: string) => void;
   refreshUser: () => Promise<void>;
+  themeMode: ThemeMode;
+  setThemeMode: (mode: ThemeMode) => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -25,6 +32,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [activeView, setActiveViewRaw] = useState<ActiveView>("overview");
   const [navKey, setNavKey] = useState(0);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [themeMode, setThemeModeRaw] = useState<ThemeMode>(
+    () => (localStorage.getItem("hackstler-theme") as ThemeMode) || "dark"
+  );
+
+  const setThemeMode = useCallback((mode: ThemeMode) => {
+    setThemeModeRaw(mode);
+    localStorage.setItem("hackstler-theme", mode);
+    applyTheme(THEME_PRESETS[mode]);
+    document.documentElement.classList.toggle("theme-light", mode === "light");
+  }, []);
+
+  // Apply theme on mount
+  useEffect(() => {
+    applyTheme(THEME_PRESETS[themeMode]);
+    document.documentElement.classList.toggle("theme-light", themeMode === "light");
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const setActiveView = useCallback((view: ActiveView) => {
     setActiveViewRaw(view);
@@ -65,6 +88,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         addToast,
         removeToast,
         refreshUser,
+        themeMode,
+        setThemeMode,
       }}
     >
       {children}

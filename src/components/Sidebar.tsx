@@ -35,7 +35,7 @@ interface SidebarProps {
 
 export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
   const { t, i18n } = useTranslation();
-  const { user, activeView, setActiveView } = useApp();
+  const { user, activeView, setActiveView, themeMode, setThemeMode } = useApp();
   const { can } = usePermissions();
 
   /**
@@ -76,7 +76,8 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
       <button
         key={item.id}
         onClick={() => handleNav(item.id)}
-        className={`animate-slide-in-left stagger-${staggerIndex} w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-[var(--radius-md)] transition-all duration-200 cursor-pointer relative ${
+        style={{ animationDelay: `${staggerIndex * 0.05}s` }}
+        className={`animate-slide-in-left w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-[var(--radius-md)] transition-all duration-200 cursor-pointer relative ${
           active
             ? "bg-accent-dim text-accent font-medium shadow-[var(--shadow-nav-active)] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-[3px] before:h-4 before:bg-accent before:rounded-full before:shadow-[0_0_8px_rgba(59,130,246,0.5)]"
             : "text-text-muted hover:bg-surface-hover hover:text-text hover:translate-x-0.5"
@@ -142,7 +143,22 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
           )}
         </nav>
 
-        <div className="border-t border-border px-3 py-2.5 flex gap-1.5">
+        <div className="border-t border-border px-3 py-2.5 flex items-center gap-1.5">
+          <button
+            onClick={() => setThemeMode(themeMode === "dark" ? "light" : "dark")}
+            className="btn-press p-1.5 rounded-[var(--radius-sm)] text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-300 cursor-pointer"
+            title={themeMode === "dark" ? "Light mode" : "Dark mode"}
+          >
+            {themeMode === "dark" ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
           {([["en", "EN"], ["es", "ES"]] as const).map(([code, label]) => {
             const active = i18n.language.startsWith(code);
             return (

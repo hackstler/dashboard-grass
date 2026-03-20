@@ -117,6 +117,7 @@ export function ChatPage() {
                 sources={pending.sources}
                 activeTool={pending.activeTool}
                 activeAgent={pending.activeAgent}
+                attachments={pending.attachments}
               />
             )}
             <div ref={messagesEndRef} />
