@@ -235,6 +235,8 @@
     "firstNamePlaceholder": "Nombre",
     "surname": "Apellido",
     "surnamePlaceholder": "Apellido",
+    "phone": "Teléfono",
+    "phonePlaceholder": "+34 600 000 000",
     "emailLabel": "Email",
     "emailAddress": "Dirección de email",
     "emailPlaceholder": "tu@ejemplo.com",

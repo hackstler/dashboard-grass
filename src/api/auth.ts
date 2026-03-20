@@ -42,6 +42,7 @@ export async function getMe(): Promise<User | null> {
       email: string;
       name: string | null;
       surname: string | null;
+      phone: string | null;
       orgId: string;
       role?: string;
       onboardingComplete?: boolean;
@@ -54,6 +55,7 @@ export async function getMe(): Promise<User | null> {
       email: data.email,
       name: data.name ?? null,
       surname: data.surname ?? null,
+      phone: data.phone ?? null,
       orgId: data.orgId,
       role: (data.role === "admin" ? "admin" : data.role === "super_admin" ? "super_admin" : "user") as User["role"],
       onboardingComplete: data.onboardingComplete,
@@ -109,6 +111,7 @@ export async function updateProfile(data: {
   email?: string;
   name?: string;
   surname?: string;
+  phone?: string;
   password?: string;
 }): Promise<User> {
   const resp = await apiRequest<{
@@ -117,6 +120,7 @@ export async function updateProfile(data: {
       email: string | null;
       name: string | null;
       surname: string | null;
+      phone: string | null;
       orgId: string;
       role: string;
       createdAt: string;
@@ -130,6 +134,7 @@ export async function updateProfile(data: {
     email: resp.data.email ?? "",
     name: resp.data.name ?? null,
     surname: resp.data.surname ?? null,
+    phone: resp.data.phone ?? null,
     orgId: resp.data.orgId,
     role: (resp.data.role === "admin" ? "admin" : resp.data.role === "super_admin" ? "super_admin" : "user") as User["role"],
   };

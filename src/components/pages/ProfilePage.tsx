@@ -14,19 +14,23 @@ export function ProfilePage() {
   const adapter = useAuthAdapter();
   const [name, setName] = useState(user?.name ?? "");
   const [surname, setSurname] = useState(user?.surname ?? "");
+  const [phone, setPhone] = useState(user?.phone ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
-    const data: { email?: string; name?: string; surname?: string; password?: string } = {};
+    const data: { email?: string; name?: string; surname?: string; phone?: string; password?: string } = {};
 
     if (name !== (user?.name ?? "")) {
       data.name = name;
     }
     if (surname !== (user?.surname ?? "")) {
       data.surname = surname;
+    }
+    if (phone !== (user?.phone ?? "")) {
+      data.phone = phone;
     }
     if (email !== user?.email) {
       data.email = email;
@@ -142,6 +146,15 @@ export function ProfilePage() {
                 onChange={(e) => setSurname(e.target.value)}
               />
             </div>
+            <div className="max-w-md mt-4">
+              <Input
+                label={t('profile.phone')}
+                type="tel"
+                placeholder={t('profile.phonePlaceholder')}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
           </div>
         )}
 
@@ -203,11 +216,44 @@ export function ProfilePage() {
           </div>
         )}
 
+        {/* Phone — always editable (stored in our DB, not Firebase) */}
         {!adapter.supportsPasswordManagement && (
           <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up stagger-1">
+            <h2 className="text-sm font-semibold text-text-bright mb-4">
+              {t('profile.personalInfo')}
+            </h2>
+            <div className="max-w-md">
+              <Input
+                label={t('profile.phone')}
+                type="tel"
+                placeholder={t('profile.phonePlaceholder')}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+          </div>
+        )}
+
+        {!adapter.supportsPasswordManagement && (
+          <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up stagger-2">
             <p className="text-sm text-text-muted">
               {t('profile.firebaseManaged')}
             </p>
+          </div>
+        )}
+
+        {/* Save for Firebase users (phone only) */}
+        {!adapter.supportsPasswordManagement && (
+          <div className="flex justify-end pt-2 pb-4">
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<SaveIcon size={16} />}
+              onClick={handleSave}
+              loading={saving}
+            >
+              {t('common.saveChanges')}
+            </Button>
           </div>
         )}
       </div>
