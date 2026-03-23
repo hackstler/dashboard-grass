@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useCallback, useEffect } from "rea
 import type { ReactNode } from "react";
 import type { User, ActiveView, Toast, ToastType, AuthState } from "../types";
 import { getMe } from "../api/auth";
+import { getMyOrganization } from "../api/admin";
 import { applyTheme, midnight, bone } from "../theme";
 
 export type ThemeMode = "dark" | "light";
@@ -12,6 +13,7 @@ interface AppContextValue {
   authState: AuthState;
   setAuthState: (state: AuthState) => void;
   user: User | null;
+  orgName: string | null;
   activeView: ActiveView;
   setActiveView: (view: ActiveView) => void;
   navKey: number;
@@ -32,6 +34,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [activeView, setActiveViewRaw] = useState<ActiveView>("overview");
   const [navKey, setNavKey] = useState(0);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [orgName, setOrgName] = useState<string | null>(null);
   const [themeMode, setThemeModeRaw] = useState<ThemeMode>(
     () => (localStorage.getItem("hackstler-theme") as ThemeMode) || "dark"
   );
@@ -75,12 +78,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const user = authState.status === "authenticated" ? authState.user : null;
 
+  // Fetch org name when user becomes authenticated
+  useEffect(() => {
+    if (user) {
+      getMyOrganization().then((org) => setOrgName(org?.name ?? null)).catch(() => {});
+    } else {
+      setOrgName(null);
+    }
+  }, [user?.orgId]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <AppContext.Provider
       value={{
         authState,
         setAuthState,
         user,
+        orgName,
         activeView,
         setActiveView,
         navKey,

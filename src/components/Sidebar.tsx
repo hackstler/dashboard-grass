@@ -35,7 +35,7 @@ interface SidebarProps {
 
 export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
   const { t, i18n } = useTranslation();
-  const { user, activeView, setActiveView, themeMode, setThemeMode } = useApp();
+  const { user, orgName, activeView, setActiveView, themeMode, setThemeMode } = useApp();
   const { can } = usePermissions();
 
   /**
@@ -112,11 +112,13 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
         <div className="px-5 py-5 border-b border-border">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-gradient-to-br from-accent to-brand rounded-[var(--radius-md)] flex items-center justify-center shadow-[var(--shadow-glow-accent)] transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(59,130,246,0.4)]">
-              <span className="text-white text-sm font-bold font-mono">H</span>
+              <span className="text-white text-sm font-bold font-mono">
+                {(orgName ?? user?.orgId ?? "H").charAt(0).toUpperCase()}
+              </span>
             </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-sm text-text-bright tracking-tight font-mono glitch-hover">
-                hackstler
+            <div className="flex flex-col min-w-0">
+              <span className="font-bold text-sm text-text-bright tracking-tight font-mono glitch-hover truncate">
+                {orgName ?? user?.orgId ?? "Agent"}
               </span>
               <span className="text-[10px] text-text-muted font-mono tracking-wider uppercase">
                 agent
