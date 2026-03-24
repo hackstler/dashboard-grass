@@ -72,7 +72,11 @@ export function useChatStream(): UseChatStreamReturn {
     query: string,
     conversationId?: string,
   ): Promise<SendResult> => {
-    if (abortRef.current) return { assistantMessage: null, conversationId: null };
+    // If a previous stream is still active, abort it before starting a new one
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
 
     const pendingId = `pending-${Date.now()}`;
     contentRef.current = "";
