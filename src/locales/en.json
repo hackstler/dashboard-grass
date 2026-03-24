@@ -455,7 +455,17 @@
     "agent_composing_email": "Composing email...",
     "agent_checking_calendar": "Checking calendar...",
     "agent_consulting_catalog": "Consulting catalog...",
-    "agent_thinking": "Thinking..."
+    "agent_thinking": "Thinking...",
+    "email_draft_title": "Email draft",
+    "email_to": "To",
+    "email_subject": "Subject",
+    "email_send": "Send",
+    "email_cancel": "Cancel",
+    "email_sending": "Sending...",
+    "email_sent": "Email sent to {{to}}",
+    "email_cancelled": "Email cancelled",
+    "email_send_error": "Failed to send email",
+    "email_retry": "Retry"
   },
   "whatsappConnections": {
     "title": "WhatsApp Connections",

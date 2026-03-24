@@ -70,6 +70,8 @@ export interface ChatMessage {
     retrievedChunks?: string[];
   } | null;
   attachments?: ChatAttachment[];
+  /** Email draft pending user confirmation (HITL) */
+  emailDraft?: { draftId: string; preview: EmailDraftPreview };
   createdAt: string;
 }
 
@@ -79,6 +81,13 @@ export interface ChatSource {
   documentSource: string;
   score: number;
   excerpt: string;
+}
+
+export interface EmailDraftPreview {
+  to: string;
+  subject: string;
+  body: string;
+  attachmentFilename: string | null;
 }
 
 export type ChatStreamEvent =
@@ -91,6 +100,7 @@ export type ChatStreamEvent =
   | { type: "sources"; chunks: ChatSource[] }
   | { type: "text"; text: string }
   | { type: "attachment"; filename: string; base64: string }
+  | { type: "email-draft"; draftId: string; preview: EmailDraftPreview }
   | { type: "done" }
   | { type: "error"; message: string };
 

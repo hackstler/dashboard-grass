@@ -1,10 +1,15 @@
 import { useState, useCallback, useRef } from "react";
 import { streamChat } from "../api/chat";
-import type { ChatMessage, ChatSource, ChatStreamEvent } from "../types";
+import type { ChatMessage, ChatSource, ChatStreamEvent, EmailDraftPreview } from "../types";
 
 export interface PendingAttachment {
   filename: string;
   base64: string;
+}
+
+export interface PendingEmailDraft {
+  draftId: string;
+  preview: EmailDraftPreview;
 }
 
 export interface PendingMessage {
@@ -16,6 +21,8 @@ export interface PendingMessage {
   /** Sub-agent currently executing (e.g. "agent-quote", "agent-rag") */
   activeAgent: string | null;
   attachments: PendingAttachment[];
+  /** Email draft pending user confirmation (HITL) */
+  emailDraft: PendingEmailDraft | null;
 }
 
 interface SendResult {
@@ -75,7 +82,7 @@ export function useChatStream(): UseChatStreamReturn {
     const pendingId = `pending-${Date.now()}`;
     contentRef.current = "";
     attachmentsRef.current = [];
-    setPending({ id: pendingId, role: "assistant", content: "", sources: [], activeTool: null, activeAgent: null, attachments: [] });
+    setPending({ id: pendingId, role: "assistant", content: "", sources: [], activeTool: null, activeAgent: null, attachments: [], emailDraft: null });
     setStreaming(true);
     setError(null);
 
@@ -131,6 +138,9 @@ export function useChatStream(): UseChatStreamReturn {
               attachmentsRef.current = [...attachmentsRef.current, { filename: event.filename, base64: event.base64 }];
               setPending((p) => p ? { ...p, attachments: attachmentsRef.current } : p);
               break;
+            case "email-draft":
+              setPending((p) => p ? { ...p, emailDraft: { draftId: event.draftId, preview: event.preview } } : p);
+              break;
 
             // ── Terminal ─────────────────────────────────────
             case "error":
@@ -163,6 +173,10 @@ export function useChatStream(): UseChatStreamReturn {
       return { assistantMessage: null, conversationId: resolvedConvId };
     }
 
+    // Capture email draft from the last pending state (it's React state, not a ref)
+    let emailDraft: PendingEmailDraft | null = null;
+    setPending((p) => { emailDraft = p?.emailDraft ?? null; return p; });
+
     return {
       assistantMessage: {
         id: pendingId,
@@ -170,6 +184,7 @@ export function useChatStream(): UseChatStreamReturn {
         content: finalContent,
         metadata: null,
         attachments: attachmentsRef.current.length > 0 ? attachmentsRef.current : undefined,
+        emailDraft: emailDraft ?? undefined,
         createdAt: new Date().toISOString(),
       },
       conversationId: resolvedConvId,

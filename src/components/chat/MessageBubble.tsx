@@ -1,5 +1,6 @@
 import { detectAttachments, formatContent, downloadBase64Pdf } from "../../utils/chat";
 import { FileTextIcon, DownloadIcon } from "../ui/Icons";
+import { EmailDraftCard } from "./EmailDraftCard";
 import type { ChatMessage } from "../../types";
 
 interface MessageBubbleProps {
@@ -31,6 +32,11 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             className={isUser ? "text-white/95" : "text-text-bright"}
             dangerouslySetInnerHTML={{ __html: formatContent(text) }}
           />
+        )}
+        {message.emailDraft && (
+          <div className="mt-3">
+            <EmailDraftCard draftId={message.emailDraft.draftId} preview={message.emailDraft.preview} />
+          </div>
         )}
         {(pdfs.length > 0 || attachments.length > 0) && (
           <div className="mt-3 space-y-2">

@@ -118,6 +118,7 @@ export function ChatPage() {
                 activeTool={pending.activeTool}
                 activeAgent={pending.activeAgent}
                 attachments={pending.attachments}
+                emailDraft={pending.emailDraft}
               />
             )}
             <div ref={messagesEndRef} />
