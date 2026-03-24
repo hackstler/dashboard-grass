@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useApp } from "../../context/AppContext";
-import { getMyOrganization } from "../../api/admin";
 import {
   Card,
   CardHeader,
@@ -15,14 +12,6 @@ const AGENT_PHONE = "34628506129";
 
 export function WhatsAppPage() {
   const { t } = useTranslation();
-  const { user } = useApp();
-  const [agentName, setAgentName] = useState<string | null>(null);
-
-  useEffect(() => {
-    getMyOrganization().then((org) => {
-      setAgentName(org?.name ?? null);
-    }).catch(() => {});
-  }, []);
 
   const waLink = `https://wa.me/${AGENT_PHONE}?text=${encodeURIComponent(t("whatsapp.defaultMessage"))}`;
   const displayPhone = "+34 628 50 61 29";
@@ -92,7 +81,7 @@ export function WhatsAppPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {steps.map((step, i) => (
+              {steps.map((step) => (
                 <div key={step.key} className="flex items-start gap-3">
                   <div className="w-7 h-7 shrink-0 rounded-full bg-accent/10 flex items-center justify-center text-xs font-bold text-accent">
                     {step.icon}
