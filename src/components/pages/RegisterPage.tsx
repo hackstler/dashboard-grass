@@ -26,6 +26,7 @@ export function RegisterPage() {
   // Form state
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -110,6 +111,7 @@ export function RegisterPage() {
         password,
         firstName || undefined,
         lastName || undefined,
+        phone || undefined,
       );
       goToDashboard();
     } catch (err) {
@@ -133,6 +135,7 @@ export function RegisterPage() {
         token!,
         firstName.trim(),
         lastName.trim(),
+        phone.trim() || undefined,
       );
       goToDashboard();
     } catch (err) {
@@ -245,6 +248,15 @@ export function RegisterPage() {
                     autoComplete="family-name"
                   />
                 </div>
+
+                <Input
+                  label={t('profile.phone')}
+                  type="tel"
+                  placeholder="34612345678"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  autoComplete="tel"
+                />
 
                 {isFirebase ? (
                   <Button

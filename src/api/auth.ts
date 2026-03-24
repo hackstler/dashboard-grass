@@ -90,6 +90,7 @@ export async function registerWithInvite(data: {
   password?: string;
   firstName?: string;
   lastName?: string;
+  phone?: string;
 }): Promise<LoginResponse> {
   const resp = await apiRequest<LoginResponse>("/auth/register-with-invite", {
     method: "POST",

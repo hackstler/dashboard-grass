@@ -23,6 +23,7 @@ export class PasswordAuthAdapter implements AuthAdapter {
     password: string,
     firstName?: string,
     lastName?: string,
+    phone?: string,
   ): Promise<void> {
     await registerWithInvite({
       inviteToken,
@@ -30,6 +31,7 @@ export class PasswordAuthAdapter implements AuthAdapter {
       password,
       firstName,
       lastName,
+      phone,
     });
   }
 

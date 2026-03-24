@@ -104,6 +104,7 @@ export class FirebaseAuthAdapter implements AuthAdapter {
     inviteToken: string,
     firstName?: string,
     lastName?: string,
+    phone?: string,
   ): Promise<void> {
     const result = await googleSignIn({ type: "register", inviteToken, firstName, lastName });
     if (!result) return; // redirect flow — page navigated away
@@ -114,6 +115,7 @@ export class FirebaseAuthAdapter implements AuthAdapter {
       idToken,
       firstName,
       lastName,
+      phone,
     });
   }
 

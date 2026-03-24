@@ -8,6 +8,7 @@ export interface AuthAdapter {
     inviteToken: string,
     firstName?: string,
     lastName?: string,
+    phone?: string,
   ): Promise<void>;
   registerWithCredentials(
     inviteToken: string,
@@ -15,6 +16,7 @@ export interface AuthAdapter {
     password: string,
     firstName?: string,
     lastName?: string,
+    phone?: string,
   ): Promise<void>;
   handleRedirectResult(): Promise<boolean>;
   logout(): Promise<void>;
