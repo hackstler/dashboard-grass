@@ -70,8 +70,8 @@ export interface ChatMessage {
     retrievedChunks?: string[];
   } | null;
   attachments?: ChatAttachment[];
-  /** Email draft pending user confirmation (HITL) */
-  emailDraft?: { draftId: string; preview: EmailDraftPreview };
+  /** Action pending user confirmation (HITL) */
+  pendingAction?: PendingActionEvent;
   createdAt: string;
 }
 
@@ -83,11 +83,10 @@ export interface ChatSource {
   excerpt: string;
 }
 
-export interface EmailDraftPreview {
-  to: string;
-  subject: string;
-  body: string;
-  attachmentFilename: string | null;
+export interface PendingActionEvent {
+  actionId: string;
+  actionType: string;
+  preview: Record<string, unknown>;
 }
 
 export type ChatStreamEvent =
@@ -100,7 +99,7 @@ export type ChatStreamEvent =
   | { type: "sources"; chunks: ChatSource[] }
   | { type: "text"; text: string }
   | { type: "attachment"; filename: string; base64: string }
-  | { type: "email-draft"; draftId: string; preview: EmailDraftPreview }
+  | { type: "pending-action"; actionId: string; actionType: string; preview: Record<string, unknown> }
   | { type: "done" }
   | { type: "error"; message: string };
 

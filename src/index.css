@@ -68,6 +68,10 @@
 
 /* ── Base typography refinement ──────────────────────────── */
 
+html, body {
+  background-color: var(--color-bg);
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -460,12 +460,16 @@
     "email_to": "Para",
     "email_subject": "Asunto",
     "email_send": "Enviar",
-    "email_cancel": "Cancelar",
-    "email_sending": "Enviando...",
-    "email_sent": "Email enviado a {{to}}",
-    "email_cancelled": "Email cancelado",
-    "email_send_error": "Error al enviar el email",
-    "email_retry": "Reintentar"
+    "event_draft_title": "Nuevo evento",
+    "event_create": "Crear",
+    "action_confirm_title": "Confirmación requerida",
+    "action_confirm": "Confirmar",
+    "action_cancel": "Cancelar",
+    "action_processing": "Procesando...",
+    "action_approved": "Acción completada",
+    "action_cancelled": "Acción cancelada",
+    "action_error": "Error al procesar la acción",
+    "action_retry": "Reintentar"
   },
   "whatsappConnections": {
     "title": "Conexiones WhatsApp",

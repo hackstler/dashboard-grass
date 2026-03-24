@@ -3,10 +3,10 @@ import { formatContent } from "../../utils/chat";
 import { SourcesBadge } from "./SourcesBadge";
 import { resolveToolLabel, resolveAgentLabel } from "../../hooks/useChatStream";
 import { SearchIcon, FileTextIcon, DownloadIcon } from "../ui/Icons";
-import { EmailDraftCard } from "./EmailDraftCard";
+import { PendingActionCard } from "./PendingActionCard";
 import { downloadBase64Pdf } from "../../utils/chat";
-import type { ChatSource } from "../../types";
-import type { PendingAttachment, PendingEmailDraft } from "../../hooks/useChatStream";
+import type { ChatSource, PendingActionEvent } from "../../types";
+import type { PendingAttachment } from "../../hooks/useChatStream";
 
 interface StreamingBubbleProps {
   content: string;
@@ -14,10 +14,10 @@ interface StreamingBubbleProps {
   activeTool: string | null;
   activeAgent: string | null;
   attachments: PendingAttachment[];
-  emailDraft: PendingEmailDraft | null;
+  pendingAction: PendingActionEvent | null;
 }
 
-export function StreamingBubble({ content, sources, activeTool, activeAgent, attachments, emailDraft }: StreamingBubbleProps) {
+export function StreamingBubble({ content, sources, activeTool, activeAgent, attachments, pendingAction }: StreamingBubbleProps) {
   const { t } = useTranslation();
 
   // Resolve the activity label: prefer agent-level ("Generando presupuesto...")
@@ -53,9 +53,9 @@ export function StreamingBubble({ content, sources, activeTool, activeAgent, att
           </div>
         )}
 
-        {/* Email draft card — HITL confirmation */}
-        {emailDraft && (
-          <EmailDraftCard draftId={emailDraft.draftId} preview={emailDraft.preview} />
+        {/* Pending action card — HITL confirmation */}
+        {pendingAction && (
+          <PendingActionCard action={pendingAction} />
         )}
 
         {/* Activity indicator — shown when a tool or sub-agent is running and no text yet */}

@@ -1,6 +1,6 @@
 import { detectAttachments, formatContent, downloadBase64Pdf } from "../../utils/chat";
 import { FileTextIcon, DownloadIcon } from "../ui/Icons";
-import { EmailDraftCard } from "./EmailDraftCard";
+import { PendingActionCard } from "./PendingActionCard";
 import type { ChatMessage } from "../../types";
 
 interface MessageBubbleProps {
@@ -33,9 +33,9 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             dangerouslySetInnerHTML={{ __html: formatContent(text) }}
           />
         )}
-        {message.emailDraft && (
+        {message.pendingAction && (
           <div className="mt-3">
-            <EmailDraftCard draftId={message.emailDraft.draftId} preview={message.emailDraft.preview} />
+            <PendingActionCard action={message.pendingAction} />
           </div>
         )}
         {(pdfs.length > 0 || attachments.length > 0) && (

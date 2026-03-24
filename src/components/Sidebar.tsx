@@ -102,7 +102,7 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
         />
       )}
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-50 w-60 flex-shrink-0 bg-surface border-r border-border flex flex-col transition-transform duration-300 ease-out md:translate-x-0 scanlines ${
+        className={`fixed md:static inset-y-0 left-0 z-50 w-60 flex-shrink-0 bg-surface border-r border-border flex flex-col overflow-hidden transition-transform duration-300 ease-out md:translate-x-0 scanlines ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -127,7 +127,7 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
           </div>
         </div>
 
-        <nav className="flex-1 py-3 px-3 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
           {mainItems.map((item) => renderNavButton(item, ++stagger))}
           {adminItems.length > 0 && (
             <>
@@ -191,7 +191,7 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
                 {user?.name ? (user.surname ? `${user.name} ${user.surname}` : user.name) : user?.email}
               </p>
               <p className="text-xs text-text-dim truncate font-mono text-left">
-                {user?.orgId}
+                {orgName ?? user?.orgId}
               </p>
             </div>
           </button>

@@ -1,15 +1,10 @@
 import { useState, useCallback, useRef } from "react";
 import { streamChat } from "../api/chat";
-import type { ChatMessage, ChatSource, ChatStreamEvent, EmailDraftPreview } from "../types";
+import type { ChatMessage, ChatSource, ChatStreamEvent, PendingActionEvent } from "../types";
 
 export interface PendingAttachment {
   filename: string;
   base64: string;
-}
-
-export interface PendingEmailDraft {
-  draftId: string;
-  preview: EmailDraftPreview;
 }
 
 export interface PendingMessage {
@@ -21,8 +16,8 @@ export interface PendingMessage {
   /** Sub-agent currently executing (e.g. "agent-quote", "agent-rag") */
   activeAgent: string | null;
   attachments: PendingAttachment[];
-  /** Email draft pending user confirmation (HITL) */
-  emailDraft: PendingEmailDraft | null;
+  /** Action pending user confirmation (HITL) */
+  pendingAction: PendingActionEvent | null;
 }
 
 interface SendResult {
@@ -82,7 +77,7 @@ export function useChatStream(): UseChatStreamReturn {
     const pendingId = `pending-${Date.now()}`;
     contentRef.current = "";
     attachmentsRef.current = [];
-    setPending({ id: pendingId, role: "assistant", content: "", sources: [], activeTool: null, activeAgent: null, attachments: [], emailDraft: null });
+    setPending({ id: pendingId, role: "assistant", content: "", sources: [], activeTool: null, activeAgent: null, attachments: [], pendingAction: null });
     setStreaming(true);
     setError(null);
 
@@ -138,8 +133,8 @@ export function useChatStream(): UseChatStreamReturn {
               attachmentsRef.current = [...attachmentsRef.current, { filename: event.filename, base64: event.base64 }];
               setPending((p) => p ? { ...p, attachments: attachmentsRef.current } : p);
               break;
-            case "email-draft":
-              setPending((p) => p ? { ...p, emailDraft: { draftId: event.draftId, preview: event.preview } } : p);
+            case "pending-action":
+              setPending((p) => p ? { ...p, pendingAction: { actionId: event.actionId, actionType: event.actionType, preview: event.preview } } : p);
               break;
 
             // ── Terminal ─────────────────────────────────────
@@ -173,9 +168,9 @@ export function useChatStream(): UseChatStreamReturn {
       return { assistantMessage: null, conversationId: resolvedConvId };
     }
 
-    // Capture email draft from the last pending state (it's React state, not a ref)
-    let emailDraft: PendingEmailDraft | null = null;
-    setPending((p) => { emailDraft = p?.emailDraft ?? null; return p; });
+    // Capture pending action from the last pending state (it's React state, not a ref)
+    let pendingAction: PendingActionEvent | null = null;
+    setPending((p) => { pendingAction = p?.pendingAction ?? null; return p; });
 
     return {
       assistantMessage: {
@@ -184,7 +179,7 @@ export function useChatStream(): UseChatStreamReturn {
         content: finalContent,
         metadata: null,
         attachments: attachmentsRef.current.length > 0 ? attachmentsRef.current : undefined,
-        emailDraft: emailDraft ?? undefined,
+        pendingAction: pendingAction ?? undefined,
         createdAt: new Date().toISOString(),
       },
       conversationId: resolvedConvId,

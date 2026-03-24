@@ -460,12 +460,16 @@
     "email_to": "To",
     "email_subject": "Subject",
     "email_send": "Send",
-    "email_cancel": "Cancel",
-    "email_sending": "Sending...",
-    "email_sent": "Email sent to {{to}}",
-    "email_cancelled": "Email cancelled",
-    "email_send_error": "Failed to send email",
-    "email_retry": "Retry"
+    "event_draft_title": "New event",
+    "event_create": "Create",
+    "action_confirm_title": "Confirmation required",
+    "action_confirm": "Confirm",
+    "action_cancel": "Cancel",
+    "action_processing": "Processing...",
+    "action_approved": "Action completed",
+    "action_cancelled": "Action cancelled",
+    "action_error": "Failed to process action",
+    "action_retry": "Retry"
   },
   "whatsappConnections": {
     "title": "WhatsApp Connections",
