@@ -82,16 +82,36 @@ export function UsersPage() {
     fetchInvitations();
   }, [fetchInvitations]);
 
+  // Invite URL shown inside the create modal after successful Firebase invite
+  const [createInviteUrl, setCreateInviteUrl] = useState<string | null>(null);
+  const [createCopied, setCreateCopied] = useState(false);
+
+  const handleCopyCreateInviteUrl = () => {
+    if (!createInviteUrl) return;
+    navigator.clipboard.writeText(createInviteUrl);
+    setCreateCopied(true);
+    setTimeout(() => setCreateCopied(false), 2000);
+  };
+
   const handleCreate = async () => {
     setCreating(true);
     try {
       if (strategy === "firebase") {
+        // Firebase mode: create user + generate invitation in one step
         await createUser({
           email: newEmail,
           phone: newPhone || undefined,
           orgId: newOrgId,
           role: newRole,
         });
+        // Generate invitation link automatically
+        const result = await createInvitation({
+          email: newEmail,
+          role: newRole as "admin" | "user",
+        });
+        setCreateInviteUrl(result.inviteUrl);
+        fetchInvitations();
+        addToast(t('users.userInvited'), "success");
       } else {
         await createUser({
           email: newEmail,
@@ -102,10 +122,10 @@ export function UsersPage() {
           orgId: newOrgId,
           role: newRole,
         });
+        addToast(t('users.userCreated'), "success");
+        setShowCreate(false);
+        resetCreateForm();
       }
-      addToast(strategy === "firebase" ? t('users.userInvited') : t('users.userCreated'), "success");
-      setShowCreate(false);
-      resetCreateForm();
     } catch (err) {
       addToast(
         err instanceof Error ? err.message : t('users.createFailed'),
@@ -420,89 +440,129 @@ export function UsersPage() {
         open={showCreate}
         onClose={() => {
           setShowCreate(false);
+          setCreateInviteUrl(null);
           resetCreateForm();
         }}
         title={strategy === "firebase" ? t('users.inviteUser') : t('users.createUser')}
       >
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label={t('common.name')}
-              placeholder={t('users.firstNamePlaceholder')}
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            />
-            <Input
-              label={t('profile.surname')}
-              placeholder={t('users.lastNamePlaceholder')}
-              value={newSurname}
-              onChange={(e) => setNewSurname(e.target.value)}
-            />
-          </div>
-          <Input
-            label={t('common.email')}
-            type="email"
-            placeholder={t('users.emailPlaceholder')}
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-          />
-          <Input
-            label={t('profile.phone')}
-            type="tel"
-            placeholder="34612345678"
-            value={newPhone}
-            onChange={(e) => setNewPhone(e.target.value)}
-          />
-          {strategy !== "firebase" && (
-            <Input
-              label={t('common.password')}
-              type="password"
-              placeholder={t('users.passwordPlaceholder')}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
+          {createInviteUrl ? (
+            /* Firebase: show invite link after successful creation */
+            <>
+              <p className="text-sm text-text-muted">
+                {t('users.shareLink')}
+              </p>
+              <div className="flex items-center gap-2">
+                <input
+                  readOnly
+                  value={createInviteUrl}
+                  className="flex-1 bg-surface border border-border text-text text-xs px-3 py-2 rounded-[var(--radius-md)] font-mono truncate"
+                />
+                <Button
+                  variant={createCopied ? "primary" : "secondary"}
+                  size="sm"
+                  onClick={handleCopyCreateInviteUrl}
+                >
+                  {createCopied ? t('common.copied') : t('common.copy')}
+                </Button>
+              </div>
+              <div className="flex justify-end pt-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setShowCreate(false);
+                    setCreateInviteUrl(null);
+                    resetCreateForm();
+                  }}
+                >
+                  {t('common.close')}
+                </Button>
+              </div>
+            </>
+          ) : (
+            /* Form: create user (password) or invite user (firebase) */
+            <>
+              <div className="grid grid-cols-2 gap-3">
+                <Input
+                  label={t('common.name')}
+                  placeholder={t('users.firstNamePlaceholder')}
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                />
+                <Input
+                  label={t('profile.surname')}
+                  placeholder={t('users.lastNamePlaceholder')}
+                  value={newSurname}
+                  onChange={(e) => setNewSurname(e.target.value)}
+                />
+              </div>
+              <Input
+                label={t('common.email')}
+                type="email"
+                placeholder={t('users.emailPlaceholder')}
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+              />
+              <Input
+                label={t('profile.phone')}
+                type="tel"
+                placeholder="34612345678"
+                value={newPhone}
+                onChange={(e) => setNewPhone(e.target.value)}
+              />
+              {strategy !== "firebase" && (
+                <Input
+                  label={t('common.password')}
+                  type="password"
+                  placeholder={t('users.passwordPlaceholder')}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              )}
+              <Input
+                label={t('users.orgIdLabel')}
+                placeholder={t('users.orgIdPlaceholder')}
+                value={newOrgId}
+                onChange={(e) => setNewOrgId(e.target.value)}
+              />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-medium text-text-muted">{t('common.role')}</label>
+                <select
+                  value={newRole}
+                  onChange={(e) =>
+                    setNewRole(e.target.value as "admin" | "user" | "super_admin")
+                  }
+                  className="w-full bg-surface border border-border text-text text-sm px-3 py-2 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer"
+                >
+                  <option value="user">{t('users.roleUser')}</option>
+                  <option value="admin">{t('users.roleAdmin')}</option>
+                  <option value="super_admin">{t('users.roleSuperAdmin')}</option>
+                </select>
+              </div>
+              <div className="flex justify-end gap-3 pt-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setShowCreate(false);
+                    resetCreateForm();
+                  }}
+                >
+                  {t('common.cancel')}
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={handleCreate}
+                  loading={creating}
+                  disabled={isCreateDisabled}
+                >
+                  {strategy === "firebase" ? t('users.invite') : t('common.create')}
+                </Button>
+              </div>
+            </>
           )}
-          <Input
-            label={t('users.orgIdLabel')}
-            placeholder={t('users.orgIdPlaceholder')}
-            value={newOrgId}
-            onChange={(e) => setNewOrgId(e.target.value)}
-          />
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-text-muted">{t('common.role')}</label>
-            <select
-              value={newRole}
-              onChange={(e) =>
-                setNewRole(e.target.value as "admin" | "user" | "super_admin")
-              }
-              className="w-full bg-surface border border-border text-text text-sm px-3 py-2 rounded-[var(--radius-md)] outline-none focus:border-accent/50 cursor-pointer"
-            >
-              <option value="user">{t('users.roleUser')}</option>
-              <option value="admin">{t('users.roleAdmin')}</option>
-              <option value="super_admin">{t('users.roleSuperAdmin')}</option>
-            </select>
-          </div>
-          <div className="flex justify-end gap-3 pt-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setShowCreate(false);
-                resetCreateForm();
-              }}
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={handleCreate}
-              loading={creating}
-              disabled={isCreateDisabled}
-            >
-              {strategy === "firebase" ? t('users.invite') : t('common.create')}
-            </Button>
-          </div>
         </div>
       </Modal>
 
