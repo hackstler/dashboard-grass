@@ -46,7 +46,7 @@ const VIEW_COMPONENTS: Record<ActiveView, ReactNode> = {
 
 function AppContent() {
   const auth = useAuth();
-  const { authState, setAuthState, activeView, setActiveView, navKey, refreshUser } = useApp();
+  const { authState, setAuthState, activeView, setActiveView, navKey } = useApp();
   const { canView } = usePermissions();
 
   useEffect(() => {
