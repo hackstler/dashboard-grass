@@ -5,7 +5,6 @@ import { usePermissions } from "./hooks/usePermissions";
 import { AppProvider, useApp } from "./context/AppContext";
 import { LoginPage } from "./components/pages/LoginPage";
 import { RegisterPage } from "./components/pages/RegisterPage";
-import { OnboardingPage } from "./components/pages/OnboardingPage";
 import { Layout } from "./components/Layout";
 import { OverviewPage } from "./components/pages/OverviewPage";
 import { WhatsAppPage } from "./components/pages/WhatsAppPage";
@@ -81,11 +80,6 @@ function AppContent() {
     setAuthState({ status: "unauthenticated" });
   };
 
-  const handleOnboardingComplete = async () => {
-    await refreshUser();
-    setActiveView("overview");
-  };
-
   // Redirect to overview if user is on a view they can't access
   useEffect(() => {
     if (authState.status === "authenticated" && !canView(activeView)) {
@@ -109,10 +103,7 @@ function AppContent() {
     return <LoginPage onLogin={handleLogin} />;
   }
 
-  // Onboarding gate: if user hasn't completed onboarding, show onboarding page
-  if (authState.user.onboardingComplete === false) {
-    return <OnboardingPage onComplete={handleOnboardingComplete} />;
-  }
+  // Onboarding gate removed — WhatsApp now uses Kapso webhook, no worker pairing needed.
 
   const page = canView(activeView) ? VIEW_COMPONENTS[activeView] : <OverviewPage />;
 

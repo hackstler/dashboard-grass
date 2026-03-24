@@ -41,6 +41,7 @@ export function UsersPage() {
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newOrgId, setNewOrgId] = useState("");
+  const [newPhone, setNewPhone] = useState("");
   const [newRole, setNewRole] = useState<"admin" | "user" | "super_admin">("user");
 
   // Edit modal
@@ -50,6 +51,7 @@ export function UsersPage() {
   const [editSurname, setEditSurname] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editRole, setEditRole] = useState<"admin" | "user" | "super_admin">("user");
+  const [editPhone, setEditPhone] = useState("");
   const [editPassword, setEditPassword] = useState("");
   const [editOrgId, setEditOrgId] = useState("");
 
@@ -86,6 +88,7 @@ export function UsersPage() {
       if (strategy === "firebase") {
         await createUser({
           email: newEmail,
+          phone: newPhone || undefined,
           orgId: newOrgId,
           role: newRole,
         });
@@ -95,6 +98,7 @@ export function UsersPage() {
           password: newPassword,
           name: newName || undefined,
           surname: newSurname || undefined,
+          phone: newPhone || undefined,
           orgId: newOrgId,
           role: newRole,
         });
@@ -133,10 +137,11 @@ export function UsersPage() {
     if (!editTarget) return;
     setEditing(true);
     try {
-      const data: { email?: string; name?: string; surname?: string; role?: string; password?: string; orgId?: string } = {};
+      const data: { email?: string; name?: string; surname?: string; phone?: string | null; role?: string; password?: string; orgId?: string } = {};
       if (editName !== (editTarget.name ?? "")) data.name = editName;
       if (editSurname !== (editTarget.surname ?? "")) data.surname = editSurname;
       if (editEmail !== editTarget.email) data.email = editEmail;
+      if (editPhone !== (editTarget.phone ?? "")) data.phone = editPhone || null;
       if (editRole !== editTarget.role) data.role = editRole;
       if (editPassword) data.password = editPassword;
       if (editOrgId !== editTarget.orgId) data.orgId = editOrgId;
@@ -159,6 +164,7 @@ export function UsersPage() {
     setEditName(u.name ?? "");
     setEditSurname(u.surname ?? "");
     setEditEmail(u.email);
+    setEditPhone(u.phone ?? "");
     setEditRole(u.role as "admin" | "user" | "super_admin");
     setEditPassword("");
     setEditOrgId(u.orgId);
@@ -168,6 +174,7 @@ export function UsersPage() {
     setEditName("");
     setEditSurname("");
     setEditEmail("");
+    setEditPhone("");
     setEditRole("user");
     setEditPassword("");
     setEditOrgId("");
@@ -217,6 +224,7 @@ export function UsersPage() {
     setNewName("");
     setNewSurname("");
     setNewEmail("");
+    setNewPhone("");
     setNewPassword("");
     setNewOrgId("");
     setNewRole("user");
@@ -438,6 +446,13 @@ export function UsersPage() {
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
           />
+          <Input
+            label={t('profile.phone')}
+            type="tel"
+            placeholder="34612345678"
+            value={newPhone}
+            onChange={(e) => setNewPhone(e.target.value)}
+          />
           {strategy !== "firebase" && (
             <Input
               label={t('common.password')}
@@ -521,6 +536,13 @@ export function UsersPage() {
             placeholder={t('users.emailPlaceholder')}
             value={editEmail}
             onChange={(e) => setEditEmail(e.target.value)}
+          />
+          <Input
+            label={t('profile.phone')}
+            type="tel"
+            placeholder="34612345678"
+            value={editPhone}
+            onChange={(e) => setEditPhone(e.target.value)}
           />
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-text-muted">{t('common.role')}</label>
