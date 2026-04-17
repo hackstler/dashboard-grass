@@ -52,7 +52,8 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
     { id: "settings", labelKey: "nav.settings", icon: <SettingsIcon size={18} />, section: "main" },
     { id: "my-organization", labelKey: "nav.myOrganization", icon: <BuildingIcon size={18} />, requiredPermission: "view_own_org", section: "main" },
     { id: "users", labelKey: "nav.users", icon: <UsersIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["users"], section: "admin" },
-    { id: "catalogs", labelKey: "nav.catalog", icon: <TagIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["catalogs"], section: "admin" },
+    // Hidden: backend catalog tables archived (decoupling effort)
+    // { id: "catalogs", labelKey: "nav.catalog", icon: <TagIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["catalogs"], section: "admin" },
     { id: "organizations", labelKey: "nav.organizations", icon: <BuildingIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["organizations"], section: "super" },
     { id: "whatsapp-connections", labelKey: "nav.whatsappMgmt", icon: <MessageCircleIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["whatsapp-connections"], section: "super" },
   ];

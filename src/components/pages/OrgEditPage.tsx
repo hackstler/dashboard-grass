@@ -51,6 +51,11 @@ export function OrgEditPage({
   const [quoteValidityDays, setQuoteValidityDays] = useState("");
   const [companyRegistration, setCompanyRegistration] = useState("");
 
+  // Business logic (remote business function)
+  const [businessLogicUrl, setBusinessLogicUrl] = useState("");
+  const [businessLogicApiKey, setBusinessLogicApiKey] = useState("");
+  const [showApiKey, setShowApiKey] = useState(false);
+
   const loadOrg = useCallback(async () => {
     setLoading(true);
     try {
@@ -68,6 +73,8 @@ export function OrgEditPage({
       setPaymentTerms(qs?.paymentTerms ?? "");
       setQuoteValidityDays(qs?.quoteValidityDays != null ? String(qs.quoteValidityDays) : "");
       setCompanyRegistration(qs?.companyRegistration ?? "");
+      setBusinessLogicUrl(org.businessLogicUrl ?? "");
+      setBusinessLogicApiKey(org.businessLogicApiKey ?? "");
     } catch (err) {
       addToast(
         err instanceof Error ? err.message : t('myOrg.loadFailed'),
@@ -103,6 +110,8 @@ export function OrgEditPage({
         currency: currency || "\u20ac",
         logo,
         quoteSettings: Object.keys(qs).length > 0 ? qs : null,
+        businessLogicUrl: businessLogicUrl.trim() || null,
+        businessLogicApiKey: businessLogicApiKey.trim() || null,
       });
       addToast(t('orgEdit.orgUpdated'), "success");
       onBack();
@@ -347,6 +356,46 @@ export function OrgEditPage({
                 disabled={!isOwnOrg}
                 className="min-h-[80px]"
               />
+            </div>
+          </div>
+        </div>
+
+        {/* Business Logic (Remote Business Function) */}
+        <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-6 animate-fade-in-up stagger-3">
+          <h2 className="text-sm font-semibold text-text-bright mb-1">
+            Business Logic
+          </h2>
+          <p className="text-xs text-text-dim mb-4">
+            URL de una función externa que implementa la l&oacute;gica de presupuestos de esta organizaci&oacute;n
+            (config/catalog/calculate/pdf). D&eacute;jalo vac&iacute;o para usar la l&oacute;gica por defecto.
+          </p>
+          <div className="grid grid-cols-1 gap-4">
+            <Input
+              label="Business Logic URL"
+              type="url"
+              placeholder="https://my-business-function.example.com"
+              value={businessLogicUrl}
+              onChange={(e) => setBusinessLogicUrl(e.target.value)}
+              disabled={!isOwnOrg}
+            />
+            <div className="relative">
+              <Input
+                label="Business Logic API Key"
+                type={showApiKey ? "text" : "password"}
+                placeholder="secret key enviado como X-Api-Key"
+                value={businessLogicApiKey}
+                onChange={(e) => setBusinessLogicApiKey(e.target.value)}
+                disabled={!isOwnOrg}
+              />
+              {isOwnOrg && businessLogicApiKey && (
+                <button
+                  type="button"
+                  onClick={() => setShowApiKey((v) => !v)}
+                  className="absolute right-3 top-[34px] text-xs text-text-dim hover:text-text transition-colors cursor-pointer"
+                >
+                  {showApiKey ? "Ocultar" : "Mostrar"}
+                </button>
+              )}
             </div>
           </div>
         </div>

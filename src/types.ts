@@ -171,6 +171,8 @@ export interface OrganizationDetail {
   vatRate: number | null;
   currency: string;
   quoteSettings: QuoteSettings | null;
+  businessLogicUrl: string | null;
+  businessLogicApiKey: string | null;
   metadata: Record<string, unknown> | null;
   createdAt: string;
   updatedAt: string;
@@ -201,6 +203,8 @@ export interface UpdateOrganizationData {
   vatRate?: number | null;
   currency?: string;
   quoteSettings?: QuoteSettings | null;
+  businessLogicUrl?: string | null;
+  businessLogicApiKey?: string | null;
 }
 
 // ── Channels ────────────────────────────────────────────────────────────────
