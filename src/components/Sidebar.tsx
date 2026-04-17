@@ -13,7 +13,7 @@ import {
   LogOutIcon,
   UsersIcon,
   BuildingIcon,
-  TagIcon,
+  // TagIcon, // hidden: catalog tab archived
   SettingsIcon,
   FileTextIcon,
 } from "./ui/Icons";
