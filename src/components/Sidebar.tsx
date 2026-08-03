@@ -55,7 +55,6 @@ export function Sidebar({ onLogout, mobileOpen, onMobileClose }: SidebarProps) {
     // Hidden: backend catalog tables archived (decoupling effort)
     // { id: "catalogs", labelKey: "nav.catalog", icon: <TagIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["catalogs"], section: "admin" },
     { id: "organizations", labelKey: "nav.organizations", icon: <BuildingIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["organizations"], section: "super" },
-    { id: "whatsapp-connections", labelKey: "nav.whatsappMgmt", icon: <MessageCircleIcon size={18} />, requiredPermission: VIEW_PERMISSIONS["whatsapp-connections"], section: "super" },
   ];
 
   const visibleItems = allNavItems.filter((item) => {

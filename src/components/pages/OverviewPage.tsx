@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useApp } from "../../context/AppContext";
 import { usePermissions } from "../../hooks/usePermissions";
-import { useChannels } from "../../hooks/useChannels";
 import { useDocuments } from "../../hooks/useDocuments";
 import { apiRequest } from "../../api/http";
 import { useCatalogs } from "../../hooks/useCatalogs";
@@ -35,7 +34,6 @@ export function OverviewPage() {
   const activeCatalog = catalogs.find((c) => c.isActive);
   const animatedCatalogCount = useAnimatedCounter(catalogs.length);
 
-  const { status: waStatus, loading: waLoading } = useChannels(0);
   const { documents: docs, loading: docsLoading } = useDocuments({ pollingInterval: 0 });
 
   const totalDocs = docs.length;
@@ -46,11 +44,6 @@ export function OverviewPage() {
 
   const animatedTotal = useAnimatedCounter(totalDocs);
   const animatedIndexed = useAnimatedCounter(indexedCount);
-
-  const waConnected = waStatus?.status === "connected";
-  const waQr = waStatus?.status === "qr";
-  const waPending = waStatus?.status === "pending";
-  const waNotEnabled = waStatus?.status === "not_enabled";
 
   return (
     <div className="relative">
@@ -72,21 +65,13 @@ export function OverviewPage() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-10">
-        {/* WhatsApp */}
+        {/* WhatsApp assistant access */}
         <div
           className="stat-card glow-card scanlines bg-surface border border-border rounded-[var(--radius-xl)] p-6 animate-fade-in-up stagger-1"
           style={
             {
-              "--stat-accent": waConnected
-                ? "#22c55e"
-                : waQr || waPending
-                  ? "#eab308"
-                  : "#3b82f6",
-              "--stat-glow": waConnected
-                ? "rgba(34,197,94,0.15)"
-                : waQr || waPending
-                  ? "rgba(234,179,8,0.10)"
-                  : "rgba(59,130,246,0.10)",
+              "--stat-accent": "#22c55e",
+              "--stat-glow": "rgba(34,197,94,0.15)",
             } as React.CSSProperties
           }
         >
@@ -94,55 +79,23 @@ export function OverviewPage() {
             <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-green-muted flex items-center justify-center">
               <MessageCircleIcon size={20} className="text-green" />
             </div>
-            {waLoading && !waStatus ? (
-              <Skeleton className="h-5 w-24" />
-            ) : (
-              <Badge
-                variant={
-                  waConnected
-                    ? "success"
-                    : waQr || waPending
-                      ? "warning"
-                      : "default"
-                }
-                dot
-                pulse={waConnected}
-              >
-                {waConnected
-                  ? t('common.connected')
-                  : waQr
-                    ? t('overview.awaitingQR')
-                    : waPending
-                      ? t('overview.enabling')
-                      : waNotEnabled
-                        ? t('overview.notEnabled')
-                        : t('common.disconnected')}
-              </Badge>
-            )}
+            <Badge variant="success">
+              {t('whatsapp.title')}
+            </Badge>
           </div>
           <div className="mb-2">
-            <p className="text-2xl sm:text-3xl font-bold text-text-bright tracking-tight">
-              {waLoading && !waStatus ? (
-                <Skeleton className="h-9 w-24 inline-block" />
-              ) : waConnected ? (
-                waStatus?.phone ?? t('common.active')
-              ) : waPending ? (
-                t('overview.enabling')
-              ) : waNotEnabled ? (
-                t('overview.notEnabled')
-              ) : (
-                t('overview.offline')
-              )}
+            <p className="text-xl sm:text-2xl font-bold text-text-bright tracking-tight">
+              {t('overview.assistantTitle')}
             </p>
           </div>
-          <p className="text-xs text-text-muted mb-4">{t('overview.whatsappChannel')}</p>
+          <p className="text-xs text-text-muted mb-4">{t('overview.assistantDescription')}</p>
           <Button
             variant="ghost"
             size="sm"
             className="-ml-2.5"
             onClick={() => setActiveView("whatsapp")}
           >
-            {t('overview.manageChannel')} {'\u2192'}
+            {t('overview.assistantAccess')} {'\u2192'}
           </Button>
         </div>
 
@@ -298,7 +251,7 @@ export function OverviewPage() {
             icon={<MessageCircleIcon size={16} />}
             onClick={() => setActiveView("whatsapp")}
           >
-            {t('overview.whatsappSettings')}
+            {t('overview.assistantAccess')}
           </Button>
         </div>
       </div>
